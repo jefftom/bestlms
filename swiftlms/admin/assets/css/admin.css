@@ -1,0 +1,439 @@
+/**
+ * SwiftLMS Admin Styles
+ *
+ * @package SwiftLMS
+ */
+
+/* Variables */
+:root {
+    --swiftlms-primary: #4f46e5;
+    --swiftlms-primary-dark: #4338ca;
+    --swiftlms-secondary: #64748b;
+    --swiftlms-success: #10b981;
+    --swiftlms-warning: #f59e0b;
+    --swiftlms-danger: #ef4444;
+    --swiftlms-info: #3b82f6;
+    --swiftlms-light: #f8fafc;
+    --swiftlms-dark: #1e293b;
+    --swiftlms-border: #e2e8f0;
+    --swiftlms-radius: 8px;
+    --swiftlms-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dashboard */
+.swiftlms-admin-page {
+    max-width: 1400px;
+}
+
+.swiftlms-dashboard-widgets {
+    display: grid;
+    gap: 20px;
+}
+
+/* Stats Grid */
+.swiftlms-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.swiftlms-stat-card {
+    background: #fff;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.swiftlms-stat-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--swiftlms-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--swiftlms-primary);
+}
+
+.swiftlms-stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.swiftlms-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--swiftlms-dark);
+    line-height: 1;
+}
+
+.swiftlms-stat-label {
+    font-size: 13px;
+    color: var(--swiftlms-secondary);
+    margin-top: 4px;
+}
+
+/* Quick Actions */
+.swiftlms-quick-actions {
+    background: #fff;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.swiftlms-quick-actions h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.swiftlms-action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.swiftlms-action-buttons .button .dashicons {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Recent Enrollments */
+.swiftlms-recent-enrollments {
+    background: #fff;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.swiftlms-recent-enrollments h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.swiftlms-progress-bar {
+    background: var(--swiftlms-light);
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+    width: 100px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.swiftlms-progress-fill {
+    background: var(--swiftlms-primary);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.swiftlms-progress-text {
+    font-size: 12px;
+    color: var(--swiftlms-secondary);
+    margin-left: 8px;
+}
+
+/* System Info */
+.swiftlms-system-info {
+    background: #fff;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    padding: 20px;
+}
+
+.swiftlms-system-info h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+/* Settings */
+.swiftlms-settings-sections {
+    background: #fff;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+}
+
+.swiftlms-settings-section {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--swiftlms-border);
+}
+
+.swiftlms-settings-section:last-child {
+    border-bottom: none;
+}
+
+.swiftlms-settings-section h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.swiftlms-settings-section > .description {
+    margin-bottom: 15px;
+    color: var(--swiftlms-secondary);
+}
+
+/* Modules Grid */
+.swiftlms-modules-section {
+    margin-bottom: 30px;
+}
+
+.swiftlms-modules-section h2 {
+    margin-bottom: 15px;
+}
+
+.swiftlms-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.swiftlms-module-card {
+    background: #fff;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    padding: 20px;
+}
+
+.swiftlms-module-card.swiftlms-module-active {
+    border-color: var(--swiftlms-success);
+}
+
+.swiftlms-module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.swiftlms-module-header h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.swiftlms-module-version {
+    font-size: 12px;
+    color: var(--swiftlms-secondary);
+}
+
+.swiftlms-module-description {
+    color: var(--swiftlms-secondary);
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.swiftlms-module-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.swiftlms-status-active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.swiftlms-status-installed {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.swiftlms-status-available {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* Modal */
+.swiftlms-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.swiftlms-modal-content {
+    background: #fff;
+    border-radius: var(--swiftlms-radius);
+    padding: 25px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.swiftlms-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--swiftlms-secondary);
+}
+
+.swiftlms-modal-close:hover {
+    color: var(--swiftlms-dark);
+}
+
+/* Sortable */
+.swiftlms-sortable-lessons,
+.swiftlms-sortable-topics {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.swiftlms-lesson-item,
+.swiftlms-topic-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background: #fff;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    margin-bottom: 8px;
+}
+
+.swiftlms-drag-handle {
+    cursor: move;
+    color: var(--swiftlms-secondary);
+}
+
+.swiftlms-lesson-title,
+.swiftlms-topic-title {
+    flex: 1;
+    font-weight: 500;
+}
+
+.swiftlms-lesson-status {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #f1f5f9;
+}
+
+.swiftlms-lesson-status.publish {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.swiftlms-lesson-status.draft {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.swiftlms-sortable-placeholder {
+    border: 2px dashed var(--swiftlms-primary);
+    background: var(--swiftlms-light);
+    height: 50px;
+    margin-bottom: 8px;
+    border-radius: var(--swiftlms-radius);
+}
+
+/* Meta Tables */
+.swiftlms-meta-table {
+    width: 100%;
+}
+
+.swiftlms-meta-table th {
+    width: 150px;
+    text-align: left;
+    padding: 10px 0;
+    vertical-align: top;
+}
+
+.swiftlms-meta-table td {
+    padding: 10px 0;
+}
+
+/* Filters */
+.swiftlms-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.swiftlms-filters select {
+    min-width: 150px;
+}
+
+/* Reports Tabs */
+.swiftlms-reports-nav {
+    display: flex;
+    border-bottom: 1px solid var(--swiftlms-border);
+    margin-bottom: 20px;
+}
+
+.swiftlms-report-tab {
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--swiftlms-secondary);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.swiftlms-report-tab:hover,
+.swiftlms-report-tab.active {
+    color: var(--swiftlms-primary);
+    border-bottom-color: var(--swiftlms-primary);
+}
+
+.swiftlms-report-panel {
+    display: none;
+}
+
+.swiftlms-report-panel.active {
+    display: block;
+}
+
+/* Dev Info */
+.swiftlms-dev-info {
+    background: var(--swiftlms-light);
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    padding: 20px;
+}
+
+.swiftlms-dev-info pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 15px;
+    border-radius: var(--swiftlms-radius);
+    overflow-x: auto;
+}
+
+.swiftlms-dev-info code {
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .swiftlms-stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .swiftlms-modules-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,605 @@
+/**
+ * SwiftLMS Frontend Styles
+ *
+ * @package SwiftLMS
+ */
+
+/* Variables */
+:root {
+    --swiftlms-primary: #4f46e5;
+    --swiftlms-primary-dark: #4338ca;
+    --swiftlms-primary-light: #eef2ff;
+    --swiftlms-secondary: #64748b;
+    --swiftlms-success: #10b981;
+    --swiftlms-warning: #f59e0b;
+    --swiftlms-danger: #ef4444;
+    --swiftlms-dark: #1e293b;
+    --swiftlms-light: #f8fafc;
+    --swiftlms-border: #e2e8f0;
+    --swiftlms-radius: 8px;
+    --swiftlms-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --swiftlms-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Base */
+.swiftlms-page {
+    font-family: var(--swiftlms-font);
+    line-height: 1.6;
+    color: var(--swiftlms-dark);
+}
+
+.swiftlms-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Buttons */
+.swiftlms-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--swiftlms-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.swiftlms-button-primary {
+    background: var(--swiftlms-primary);
+    color: #fff;
+}
+
+.swiftlms-button-primary:hover {
+    background: var(--swiftlms-primary-dark);
+    color: #fff;
+}
+
+.swiftlms-button-secondary {
+    background: var(--swiftlms-light);
+    color: var(--swiftlms-dark);
+    border: 1px solid var(--swiftlms-border);
+}
+
+.swiftlms-button-secondary:hover {
+    background: #fff;
+    border-color: var(--swiftlms-primary);
+    color: var(--swiftlms-primary);
+}
+
+.swiftlms-button-small {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+/* Progress Bar */
+.swiftlms-progress-bar {
+    background: var(--swiftlms-light);
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.swiftlms-progress-fill {
+    background: linear-gradient(90deg, var(--swiftlms-primary), var(--swiftlms-primary-dark));
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* Course Archive */
+.swiftlms-course-archive {
+    padding-bottom: 60px;
+}
+
+.swiftlms-archive-header {
+    background: linear-gradient(135deg, var(--swiftlms-primary), var(--swiftlms-primary-dark));
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.swiftlms-archive-title {
+    font-size: 36px;
+    margin: 0 0 15px;
+}
+
+.swiftlms-archive-description {
+    font-size: 18px;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.swiftlms-archive-content {
+    padding-top: 40px;
+}
+
+/* Filters */
+.swiftlms-archive-filters {
+    margin-bottom: 30px;
+}
+
+.swiftlms-filter-form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.swiftlms-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.swiftlms-filter-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--swiftlms-secondary);
+}
+
+.swiftlms-filter-group select,
+.swiftlms-filter-group input {
+    padding: 10px 15px;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    font-size: 14px;
+    min-width: 180px;
+}
+
+/* Course Grid */
+.swiftlms-course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.swiftlms-course-card {
+    background: #fff;
+    border-radius: var(--swiftlms-radius);
+    box-shadow: var(--swiftlms-shadow);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.swiftlms-course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+.swiftlms-card-thumbnail {
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.swiftlms-card-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.swiftlms-no-thumbnail {
+    background: var(--swiftlms-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.swiftlms-no-thumbnail .dashicons {
+    font-size: 48px;
+    color: var(--swiftlms-border);
+}
+
+.swiftlms-card-content {
+    padding: 20px;
+}
+
+.swiftlms-card-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--swiftlms-primary-light);
+    color: var(--swiftlms-primary);
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.swiftlms-card-title {
+    font-size: 18px;
+    margin: 0 0 10px;
+    line-height: 1.4;
+}
+
+.swiftlms-card-title a {
+    color: var(--swiftlms-dark);
+    text-decoration: none;
+}
+
+.swiftlms-card-title a:hover {
+    color: var(--swiftlms-primary);
+}
+
+.swiftlms-card-excerpt {
+    color: var(--swiftlms-secondary);
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.swiftlms-card-meta {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.swiftlms-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--swiftlms-secondary);
+}
+
+.swiftlms-meta-item .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.swiftlms-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid var(--swiftlms-border);
+}
+
+.swiftlms-card-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--swiftlms-primary);
+}
+
+.swiftlms-card-price.swiftlms-free {
+    color: var(--swiftlms-success);
+}
+
+.swiftlms-enrolled-badge {
+    background: var(--swiftlms-success);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Single Course */
+.swiftlms-course-single {
+    background: var(--swiftlms-light);
+}
+
+.swiftlms-course-header {
+    background: linear-gradient(135deg, var(--swiftlms-dark), #334155);
+    color: #fff;
+    padding: 60px 0;
+}
+
+.swiftlms-course-header .swiftlms-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.swiftlms-course-thumbnail img {
+    width: 100%;
+    border-radius: var(--swiftlms-radius);
+    box-shadow: var(--swiftlms-shadow);
+}
+
+.swiftlms-course-title {
+    font-size: 32px;
+    margin: 0 0 15px;
+}
+
+.swiftlms-course-excerpt {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.swiftlms-course-meta {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.swiftlms-course-action {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.swiftlms-enrolled-status {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: var(--swiftlms-radius);
+}
+
+.swiftlms-course-content {
+    padding: 40px 0;
+}
+
+.swiftlms-course-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 40px;
+}
+
+.swiftlms-course-main {
+    background: #fff;
+    border-radius: var(--swiftlms-radius);
+    box-shadow: var(--swiftlms-shadow);
+}
+
+.swiftlms-course-section {
+    padding: 30px;
+    border-bottom: 1px solid var(--swiftlms-border);
+}
+
+.swiftlms-course-section:last-child {
+    border-bottom: none;
+}
+
+.swiftlms-course-section h2 {
+    font-size: 20px;
+    margin: 0 0 20px;
+}
+
+/* Lessons List */
+.swiftlms-lessons-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.swiftlms-lesson-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--swiftlms-border);
+    border-radius: var(--swiftlms-radius);
+    margin-bottom: 10px;
+    transition: border-color 0.2s ease;
+}
+
+.swiftlms-lesson-item:hover {
+    border-color: var(--swiftlms-primary);
+}
+
+.swiftlms-lesson-item.swiftlms-lesson-completed {
+    background: #f0fdf4;
+    border-color: var(--swiftlms-success);
+}
+
+.swiftlms-lesson-number {
+    width: 32px;
+    height: 32px;
+    background: var(--swiftlms-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--swiftlms-secondary);
+    flex-shrink: 0;
+}
+
+.swiftlms-lesson-info {
+    flex: 1;
+}
+
+.swiftlms-lesson-title {
+    font-weight: 500;
+    color: var(--swiftlms-dark);
+    text-decoration: none;
+    display: block;
+}
+
+a.swiftlms-lesson-title:hover {
+    color: var(--swiftlms-primary);
+}
+
+.swiftlms-lesson-locked {
+    color: var(--swiftlms-secondary);
+}
+
+.swiftlms-lesson-locked .dashicons {
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.swiftlms-lesson-meta {
+    font-size: 13px;
+    color: var(--swiftlms-secondary);
+    margin-top: 4px;
+}
+
+.swiftlms-preview-badge {
+    background: var(--swiftlms-primary-light);
+    color: var(--swiftlms-primary);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.swiftlms-lesson-status .swiftlms-completed {
+    color: var(--swiftlms-success);
+    font-size: 20px;
+}
+
+.swiftlms-in-progress {
+    font-size: 12px;
+    color: var(--swiftlms-primary);
+    font-weight: 600;
+}
+
+/* Sidebar */
+.swiftlms-course-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.swiftlms-sidebar-widget {
+    background: #fff;
+    border-radius: var(--swiftlms-radius);
+    box-shadow: var(--swiftlms-shadow);
+    padding: 20px;
+}
+
+.swiftlms-sidebar-widget h3 {
+    font-size: 16px;
+    margin: 0 0 15px;
+}
+
+.swiftlms-instructor-info {
+    display: flex;
+    gap: 15px;
+}
+
+.swiftlms-instructor-info img {
+    border-radius: 50%;
+}
+
+.swiftlms-category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.swiftlms-category-list li {
+    margin-bottom: 8px;
+}
+
+.swiftlms-category-list a {
+    color: var(--swiftlms-secondary);
+    text-decoration: none;
+}
+
+.swiftlms-category-list a:hover {
+    color: var(--swiftlms-primary);
+}
+
+.swiftlms-share-links {
+    display: flex;
+    gap: 10px;
+}
+
+.swiftlms-share-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--swiftlms-light);
+    border-radius: 50%;
+    color: var(--swiftlms-secondary);
+    transition: all 0.2s ease;
+}
+
+.swiftlms-share-links a:hover {
+    background: var(--swiftlms-primary);
+    color: #fff;
+}
+
+/* Pagination */
+.swiftlms-pagination {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.swiftlms-pagination .nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.swiftlms-pagination a,
+.swiftlms-pagination span {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: var(--swiftlms-radius);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.swiftlms-pagination a {
+    background: #fff;
+    color: var(--swiftlms-dark);
+    box-shadow: var(--swiftlms-shadow);
+}
+
+.swiftlms-pagination a:hover {
+    background: var(--swiftlms-primary);
+    color: #fff;
+}
+
+.swiftlms-pagination .current {
+    background: var(--swiftlms-primary);
+    color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .swiftlms-course-header .swiftlms-container {
+        grid-template-columns: 1fr;
+    }
+
+    .swiftlms-course-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .swiftlms-course-sidebar {
+        order: -1;
+    }
+}
+
+@media (max-width: 767px) {
+    .swiftlms-archive-title {
+        font-size: 28px;
+    }
+
+    .swiftlms-course-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .swiftlms-course-title {
+        font-size: 24px;
+    }
+
+    .swiftlms-filter-form {
+        flex-direction: column;
+    }
+
+    .swiftlms-filter-group {
+        width: 100%;
+    }
+
+    .swiftlms-filter-group select,
+    .swiftlms-filter-group input {
+        width: 100%;
+    }
+}

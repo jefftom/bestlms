@@ -1,0 +1,438 @@
+/**
+ * SwiftLMS Focus Mode Styles
+ *
+ * Distraction-free learning experience
+ *
+ * @package SwiftLMS
+ */
+
+/* Hide site elements in focus mode */
+body.swiftlms-focus-mode #masthead,
+body.swiftlms-focus-mode .site-header,
+body.swiftlms-focus-mode #site-header,
+body.swiftlms-focus-mode header.header,
+body.swiftlms-focus-mode .main-navigation,
+body.swiftlms-focus-mode #colophon,
+body.swiftlms-focus-mode .site-footer,
+body.swiftlms-focus-mode #site-footer,
+body.swiftlms-focus-mode footer.footer,
+body.swiftlms-focus-mode .widget-area,
+body.swiftlms-focus-mode #secondary,
+body.swiftlms-focus-mode .sidebar,
+body.swiftlms-focus-mode #wpadminbar {
+    display: none !important;
+}
+
+body.swiftlms-focus-mode {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Lesson Single - Focus Mode Layout */
+.swiftlms-lesson-single {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Lesson Header */
+.swiftlms-lesson-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--swiftlms-dark);
+    color: #fff;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.swiftlms-lesson-nav-left {
+    flex: 1;
+}
+
+.swiftlms-back-to-course {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.swiftlms-back-to-course:hover {
+    color: #fff;
+}
+
+.swiftlms-lesson-nav-center {
+    text-align: center;
+}
+
+.swiftlms-lesson-progress-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.swiftlms-lesson-nav-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.swiftlms-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.swiftlms-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Lesson Layout */
+.swiftlms-lesson-layout {
+    display: flex;
+    flex: 1;
+}
+
+/* Lesson Main Content */
+.swiftlms-lesson-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* Video Container */
+.swiftlms-video-container {
+    background: #000;
+    position: relative;
+}
+
+.swiftlms-video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+}
+
+.swiftlms-video-wrapper iframe,
+.swiftlms-video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Resume Prompt */
+.swiftlms-resume-prompt {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: var(--swiftlms-radius);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 10;
+}
+
+.swiftlms-resume-prompt p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Lesson Content */
+.swiftlms-lesson-content {
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.swiftlms-lesson-title {
+    font-size: 28px;
+    margin: 0 0 15px;
+}
+
+.swiftlms-lesson-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--swiftlms-secondary);
+    margin-bottom: 25px;
+}
+
+.swiftlms-lesson-body {
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.swiftlms-lesson-body p {
+    margin-bottom: 20px;
+}
+
+.swiftlms-lesson-body h2,
+.swiftlms-lesson-body h3 {
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+/* Lesson Topics */
+.swiftlms-lesson-topics {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--swiftlms-border);
+}
+
+.swiftlms-topics-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.swiftlms-topics-list li {
+    margin-bottom: 10px;
+}
+
+.swiftlms-topics-list a {
+    color: var(--swiftlms-primary);
+    text-decoration: none;
+}
+
+.swiftlms-topics-list a:hover {
+    text-decoration: underline;
+}
+
+/* Lesson Actions */
+.swiftlms-lesson-actions {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--swiftlms-border);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.swiftlms-completed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px 24px;
+    border-radius: var(--swiftlms-radius);
+    font-weight: 600;
+}
+
+.swiftlms-completed-badge .dashicons {
+    font-size: 18px;
+}
+
+/* Lesson Sidebar */
+.swiftlms-lesson-sidebar {
+    width: 320px;
+    background: #fff;
+    border-left: 1px solid var(--swiftlms-border);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.swiftlms-lesson-sidebar.swiftlms-sidebar-collapsed {
+    width: 0;
+    overflow: hidden;
+}
+
+.swiftlms-sidebar-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--swiftlms-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.swiftlms-sidebar-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.swiftlms-sidebar-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--swiftlms-secondary);
+}
+
+.swiftlms-sidebar-toggle:hover {
+    color: var(--swiftlms-dark);
+}
+
+/* Course Navigation */
+.swiftlms-course-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.swiftlms-nav-lessons {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.swiftlms-nav-lesson {
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.swiftlms-nav-lesson a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--swiftlms-dark);
+    font-size: 14px;
+}
+
+.swiftlms-nav-lesson:hover {
+    background: var(--swiftlms-light);
+}
+
+.swiftlms-nav-lesson.swiftlms-current {
+    background: var(--swiftlms-primary-light);
+    border-left-color: var(--swiftlms-primary);
+}
+
+.swiftlms-nav-lesson.swiftlms-current a {
+    color: var(--swiftlms-primary);
+    font-weight: 600;
+}
+
+.swiftlms-nav-lesson.swiftlms-status-completed .swiftlms-nav-number {
+    background: var(--swiftlms-success);
+    color: #fff;
+}
+
+.swiftlms-nav-number {
+    width: 24px;
+    height: 24px;
+    background: var(--swiftlms-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--swiftlms-secondary);
+    flex-shrink: 0;
+}
+
+.swiftlms-nav-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.swiftlms-nav-status {
+    color: var(--swiftlms-success);
+    font-size: 16px;
+}
+
+/* Access Denied */
+.swiftlms-access-denied {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: var(--swiftlms-light);
+}
+
+.swiftlms-access-denied-content {
+    text-align: center;
+    max-width: 400px;
+}
+
+.swiftlms-access-denied .dashicons {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: var(--swiftlms-secondary);
+    margin-bottom: 20px;
+}
+
+.swiftlms-access-denied h2 {
+    margin: 0 0 10px;
+}
+
+.swiftlms-access-denied p {
+    color: var(--swiftlms-secondary);
+    margin-bottom: 25px;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .swiftlms-lesson-sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .swiftlms-lesson-sidebar:not(.swiftlms-sidebar-collapsed) {
+        transform: translateX(0);
+    }
+
+    .swiftlms-back-text {
+        display: none;
+    }
+
+    .swiftlms-lesson-content {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 767px) {
+    .swiftlms-lesson-header {
+        padding: 10px 15px;
+    }
+
+    .swiftlms-lesson-title {
+        font-size: 22px;
+    }
+
+    .swiftlms-lesson-body {
+        font-size: 16px;
+    }
+
+    .swiftlms-lesson-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .swiftlms-resume-prompt {
+        flex-direction: column;
+        text-align: center;
+    }
+}
