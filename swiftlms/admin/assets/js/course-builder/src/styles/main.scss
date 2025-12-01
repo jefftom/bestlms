@@ -1,0 +1,651 @@
+/**
+ * SwiftLMS Course Builder Styles
+ */
+
+$primary-color: #0073aa;
+$primary-hover: #005a87;
+$success-color: #46b450;
+$danger-color: #dc3232;
+$warning-color: #ffb900;
+$border-color: #ddd;
+$bg-light: #f9f9f9;
+$text-color: #333;
+$text-muted: #666;
+
+// Base Layout
+.sfls-course-builder {
+    max-width: 1400px;
+    margin: 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.sfls-builder-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+
+    .sfls-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e0e0e0;
+        border-top-color: $primary-color;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    p {
+        margin-top: 15px;
+        color: $text-muted;
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+// Header
+.sfls-builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 400;
+    }
+}
+
+.sfls-builder-actions {
+    display: flex;
+    gap: 10px;
+}
+
+// Content Layout
+.sfls-builder-content {
+    display: flex;
+    gap: 20px;
+}
+
+.sfls-curriculum-panel {
+    flex: 1;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    padding: 20px;
+
+    &.with-preview {
+        max-width: 60%;
+    }
+}
+
+// Section Styles
+.sfls-sections-list {
+    margin-bottom: 20px;
+}
+
+.sfls-section-item {
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &.is-dragging {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.sfls-section-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: $bg-light;
+    border-bottom: 1px solid $border-color;
+    border-radius: 8px 8px 0 0;
+    gap: 12px;
+}
+
+.sfls-section-drag-handle {
+    cursor: move;
+    color: #999;
+    padding: 5px;
+
+    &:hover {
+        color: #666;
+    }
+}
+
+.sfls-section-number {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $primary-color;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sfls-section-title {
+    flex: 1;
+}
+
+.sfls-section-title-text {
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.sfls-section-title-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid $primary-color;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.sfls-section-meta {
+    color: $text-muted;
+    font-size: 13px;
+}
+
+.sfls-section-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.sfls-section-content {
+    padding: 15px;
+}
+
+// Lesson Styles
+.sfls-lessons-list {
+    margin-bottom: 15px;
+}
+
+.sfls-lesson-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    gap: 10px;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        background: #f8fbfd;
+    }
+
+    &.is-dragging {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.sfls-lesson-drag-handle {
+    cursor: move;
+    color: #ccc;
+    padding: 3px;
+
+    &:hover {
+        color: #999;
+    }
+}
+
+.sfls-lesson-number {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e0e0e0;
+    color: #666;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.sfls-lesson-type-icon {
+    color: $primary-color;
+}
+
+.sfls-lesson-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sfls-lesson-title {
+    font-weight: 500;
+}
+
+.sfls-lesson-type-label {
+    font-size: 11px;
+    color: $text-muted;
+}
+
+.sfls-lesson-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: $text-muted;
+}
+
+.sfls-lesson-duration {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .dashicons {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.sfls-lesson-free,
+.sfls-lesson-preview {
+    background: $success-color;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.sfls-lesson-preview {
+    background: $warning-color;
+    color: #333;
+}
+
+.sfls-lesson-actions {
+    display: flex;
+    gap: 5px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.sfls-lesson-item:hover .sfls-lesson-actions {
+    opacity: 1;
+}
+
+// Action Buttons
+.sfls-action-btn {
+    padding: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    border-radius: 4px;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #f0f0f0;
+    }
+
+    &.sfls-edit-btn:hover {
+        color: $primary-color;
+    }
+
+    &.sfls-delete-btn:hover {
+        color: $danger-color;
+    }
+
+    .dashicons {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+// Add Item Button
+.sfls-add-item-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: none;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        color: $primary-color;
+        background: #f8fbfd;
+    }
+
+    .dashicons {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+    }
+
+    &.sfls-add-item-small {
+        padding: 10px;
+        font-size: 13px;
+
+        .dashicons {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+        }
+    }
+}
+
+// Modal
+.sfls-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.sfls-modal {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.sfls-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid $border-color;
+
+    h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+}
+
+.sfls-modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    padding: 5px;
+
+    &:hover {
+        color: #333;
+    }
+}
+
+.sfls-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.sfls-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid $border-color;
+    background: $bg-light;
+}
+
+// Form Elements
+.sfls-form-row {
+    margin-bottom: 20px;
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+}
+
+.sfls-input,
+.sfls-select,
+.sfls-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    font-size: 14px;
+
+    &:focus {
+        border-color: $primary-color;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+    }
+}
+
+.sfls-input-small {
+    width: 120px;
+}
+
+.sfls-type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sfls-type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 15px 20px;
+    background: $bg-light;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: $text-muted;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #f0f0f0;
+    }
+
+    &.active {
+        border-color: $primary-color;
+        background: #e5f5fa;
+        color: $primary-color;
+    }
+
+    .dashicons {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+    }
+}
+
+.sfls-checkboxes {
+    display: flex;
+    gap: 20px;
+}
+
+.sfls-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: normal !important;
+
+    input {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+// Preview Panel
+.sfls-preview-panel {
+    width: 400px;
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sfls-preview-header {
+    padding: 15px 20px;
+    background: $bg-light;
+    border-bottom: 1px solid $border-color;
+
+    h3 {
+        margin: 0 0 10px;
+        font-size: 16px;
+    }
+}
+
+.sfls-preview-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: $text-muted;
+}
+
+.sfls-preview-content {
+    padding: 15px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.sfls-preview-empty {
+    text-align: center;
+    padding: 40px;
+    color: $text-muted;
+
+    .dashicons {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 15px;
+    }
+}
+
+.sfls-preview-section {
+    margin-bottom: 10px;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.sfls-preview-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background: $bg-light;
+    cursor: pointer;
+
+    &:hover {
+        background: #f0f0f0;
+    }
+}
+
+.sfls-preview-section-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.sfls-preview-section-meta {
+    font-size: 11px;
+    color: $text-muted;
+}
+
+.sfls-preview-lessons {
+    padding: 10px 15px;
+}
+
+.sfls-preview-lesson {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.sfls-preview-lesson-number {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e0e0e0;
+    color: #666;
+    border-radius: 50%;
+    font-size: 10px;
+}
+
+.sfls-preview-lesson-title {
+    flex: 1;
+}
+
+.sfls-preview-lesson-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    color: $text-muted;
+
+    .free-badge {
+        background: $success-color;
+        color: #fff;
+        padding: 1px 5px;
+        border-radius: 3px;
+    }
+}
+
+// Drag Overlay
+.sfls-drag-overlay {
+    opacity: 0.8;
+}
+
+.sfls-section-drag,
+.sfls-lesson-drag {
+    background: #fff;
+    padding: 15px;
+    border: 2px solid $primary-color;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+}

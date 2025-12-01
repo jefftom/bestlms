@@ -1,0 +1,310 @@
+/**
+ * SwiftLMS Quiz Admin Styles
+ */
+
+/* Answer Rows */
+.sfls-answer-row,
+.sfls-matching-row,
+.sfls-ordering-row,
+.sfls-blank-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.sfls-answer-handle {
+    cursor: move;
+    color: #999;
+}
+
+.sfls-answer-handle:hover {
+    color: #666;
+}
+
+.sfls-order-number {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background: #0073aa;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.sfls-remove-answer,
+.sfls-remove-match,
+.sfls-remove-order {
+    padding: 4px 8px !important;
+    min-height: auto !important;
+}
+
+.sfls-remove-answer .dashicons,
+.sfls-remove-match .dashicons,
+.sfls-remove-order .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #a00;
+}
+
+.sfls-sortable-placeholder {
+    height: 50px;
+    background: #e5f5fa;
+    border: 2px dashed #0073aa;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.sfls-true-false-options {
+    display: flex;
+    gap: 20px;
+}
+
+.sfls-true-false-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sfls-true-false-options input:checked + span {
+    font-weight: bold;
+}
+
+/* Quiz Questions List */
+#sfls-quiz-questions-container {
+    margin-top: 15px;
+}
+
+#sfls-questions-list {
+    margin-bottom: 15px;
+}
+
+.sfls-question-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.sfls-question-item:hover {
+    border-color: #0073aa;
+}
+
+.sfls-drag-handle {
+    cursor: move;
+    color: #999;
+}
+
+.sfls-question-title {
+    flex: 1;
+    font-weight: 500;
+}
+
+.sfls-question-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #666;
+}
+
+.sfls-question-type {
+    background: #e0e0e0;
+    padding: 2px 8px;
+    border-radius: 3px;
+}
+
+.sfls-question-points {
+    background: #e5f5fa;
+    color: #0073aa;
+    padding: 2px 8px;
+    border-radius: 3px;
+}
+
+.sfls-question-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.sfls-edit-question,
+.sfls-remove-question {
+    padding: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+}
+
+.sfls-edit-question:hover {
+    color: #0073aa;
+}
+
+.sfls-remove-question:hover {
+    color: #a00;
+}
+
+.sfls-add-questions-wrap {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.sfls-questions-total {
+    padding: 10px 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Question Picker Modal */
+.sfls-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sfls-modal-content {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.sfls-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.sfls-modal-header h2 {
+    margin: 0;
+}
+
+.sfls-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    color: #666;
+}
+
+.sfls-modal-close:hover {
+    color: #000;
+}
+
+.sfls-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.sfls-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid #ddd;
+}
+
+.sfls-question-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.sfls-question-filters input[type="text"] {
+    flex: 1;
+}
+
+.sfls-question-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.sfls-question-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sfls-question-option:hover {
+    background: #f0f0f0;
+    border-color: #0073aa;
+}
+
+.sfls-question-option input[type="checkbox"] {
+    margin-top: 3px;
+}
+
+.sfls-question-info {
+    flex: 1;
+}
+
+.sfls-question-info strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.sfls-question-info .sfls-question-meta {
+    font-size: 12px;
+    color: #666;
+}
+
+.sfls-question-info .type {
+    background: #e0e0e0;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+.sfls-question-info .points {
+    color: #0073aa;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+/* Essay rubric */
+#sfls_essay_rubric {
+    font-family: monospace;
+}
