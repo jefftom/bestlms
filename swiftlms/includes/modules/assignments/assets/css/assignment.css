@@ -1,0 +1,647 @@
+/**
+ * SwiftLMS Assignment Styles
+ *
+ * @package SwiftLMS
+ */
+
+/* ==========================================================================
+   Assignment Single Page
+   ========================================================================== */
+
+.sfls-assignment-single {
+    background-color: #f5f6f8;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+.sfls-assignment-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.sfls-assignment-header {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sfls-assignment-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.sfls-assignment-breadcrumb a {
+    color: #4f46e5;
+    text-decoration: none;
+}
+
+.sfls-assignment-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.sfls-assignment-breadcrumb .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: #9ca3af;
+}
+
+.sfls-assignment-title {
+    margin: 0 0 20px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.sfls-assignment-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.sfls-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.sfls-meta-item .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #6b7280;
+}
+
+.sfls-meta-item.sfls-past-due {
+    color: #dc2626;
+}
+
+.sfls-meta-item.sfls-past-due .dashicons {
+    color: #dc2626;
+}
+
+.sfls-past-due-badge {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Content Layout
+   ========================================================================== */
+
+.sfls-assignment-content {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+}
+
+.sfls-assignment-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sfls-content-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sfls-content-section h2 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-assignment-description {
+    color: #374151;
+    line-height: 1.7;
+}
+
+.sfls-assignment-description p {
+    margin-bottom: 16px;
+}
+
+.sfls-assignment-description ul,
+.sfls-assignment-description ol {
+    margin: 16px 0;
+    padding-left: 24px;
+}
+
+.sfls-special-instructions {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.sfls-special-instructions h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+/* ==========================================================================
+   Notices
+   ========================================================================== */
+
+.sfls-login-notice,
+.sfls-max-attempts-notice,
+.sfls-past-due-notice,
+.sfls-late-warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sfls-login-notice .dashicons,
+.sfls-max-attempts-notice .dashicons,
+.sfls-past-due-notice .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #9ca3af;
+    margin-bottom: 16px;
+}
+
+.sfls-past-due-notice .dashicons {
+    color: #dc2626;
+}
+
+.sfls-login-notice p,
+.sfls-max-attempts-notice p,
+.sfls-past-due-notice p {
+    margin: 0 0 20px;
+    font-size: 16px;
+    color: #4b5563;
+}
+
+.sfls-late-warning {
+    flex-direction: row;
+    padding: 16px 20px;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    gap: 12px;
+    text-align: left;
+}
+
+.sfls-late-warning .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #d97706;
+    flex-shrink: 0;
+}
+
+.sfls-late-warning p {
+    margin: 0;
+    color: #92400e;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   Submission Form
+   ========================================================================== */
+
+.sfls-submission-form-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sfls-submission-form-section h2 {
+    margin: 0 0 24px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-assignment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sfls-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* File Upload */
+.sfls-file-dropzone {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.sfls-file-dropzone:hover,
+.sfls-file-dropzone.dragover {
+    border-color: #4f46e5;
+    background: #f5f3ff;
+}
+
+.sfls-file-dropzone .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+}
+
+.sfls-file-dropzone p {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #374151;
+}
+
+.sfls-file-info {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.sfls-file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.sfls-selected-file {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+.sfls-selected-file .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #4f46e5;
+}
+
+.sfls-file-name {
+    flex: 1;
+    font-size: 14px;
+    color: #1a1a2e;
+}
+
+.sfls-remove-file {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #9ca3af;
+    transition: color 0.2s ease;
+}
+
+.sfls-remove-file:hover {
+    color: #dc2626;
+}
+
+/* Text Editor */
+.sfls-text-entry-group .wp-editor-wrap {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sfls-word-count-info {
+    display: flex;
+    gap: 20px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.sfls-current-word-count {
+    margin-left: auto;
+    font-weight: 600;
+}
+
+/* URL Input */
+.sfls-url-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sfls-url-group input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.sfls-field-description {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* Form Actions */
+.sfls-form-actions {
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.sfls-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sfls-primary-btn:hover {
+    background: linear-gradient(135deg, #4338ca, #4f46e5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.sfls-primary-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.sfls-primary-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================================================
+   Sidebar - Submissions History
+   ========================================================================== */
+
+.sfls-assignment-sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+.sfls-submissions-history {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sfls-submissions-history h3 {
+    margin: 0 0 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-submission-card {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.sfls-submission-card:last-child {
+    margin-bottom: 0;
+}
+
+.sfls-submission-card.sfls-status-graded {
+    border-color: #a7f3d0;
+    background: #f0fdf4;
+}
+
+.sfls-submission-card.sfls-status-pending {
+    border-color: #fde68a;
+    background: #fffbeb;
+}
+
+.sfls-submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.sfls-attempt-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-submission-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.sfls-status-pending .sfls-submission-status {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.sfls-status-graded .sfls-submission-status {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.sfls-submission-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+.sfls-submission-date .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.sfls-late-badge {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.sfls-submission-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.sfls-submission-file .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #4f46e5;
+}
+
+.sfls-submission-file a {
+    font-size: 13px;
+    color: #4f46e5;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.sfls-submission-file a:hover {
+    text-decoration: underline;
+}
+
+.sfls-submission-grade {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px;
+    background: #f0fdf4;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.sfls-grade-display {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.sfls-grade-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #059669;
+}
+
+.sfls-grade-total {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.sfls-grade-percentage {
+    font-size: 14px;
+    font-weight: 600;
+    color: #059669;
+    margin-left: auto;
+}
+
+.sfls-submission-feedback {
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.sfls-submission-feedback h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.sfls-submission-feedback p {
+    margin: 0;
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .sfls-assignment-content {
+        grid-template-columns: 1fr;
+    }
+
+    .sfls-assignment-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .sfls-assignment-single {
+        padding: 20px 0;
+    }
+
+    .sfls-assignment-header {
+        padding: 20px;
+    }
+
+    .sfls-assignment-title {
+        font-size: 22px;
+    }
+
+    .sfls-assignment-meta {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sfls-content-section,
+    .sfls-submission-form-section {
+        padding: 20px;
+    }
+
+    .sfls-file-dropzone {
+        padding: 24px;
+    }
+
+    .sfls-file-dropzone .dashicons {
+        font-size: 36px;
+        width: 36px;
+        height: 36px;
+    }
+}

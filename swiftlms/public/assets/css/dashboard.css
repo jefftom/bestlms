@@ -1,0 +1,1439 @@
+/**
+ * SwiftLMS Student Dashboard Styles
+ *
+ * @package SwiftLMS
+ */
+
+/* ==========================================================================
+   Dashboard Layout
+   ========================================================================== */
+
+.sfls-dashboard {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f6f8;
+    max-width: 100%;
+    margin: 0;
+}
+
+.sfls-dashboard-sidebar {
+    width: 280px;
+    background: #fff;
+    border-right: 1px solid #e2e4e9;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sfls-dashboard-main {
+    flex: 1;
+    padding: 32px 40px;
+    max-width: 1200px;
+    min-width: 0;
+}
+
+/* ==========================================================================
+   User Card
+   ========================================================================== */
+
+.sfls-user-card {
+    padding: 32px 24px;
+    text-align: center;
+    border-bottom: 1px solid #e2e4e9;
+}
+
+.sfls-user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sfls-user-name {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-user-since {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Dashboard Navigation
+   ========================================================================== */
+
+.sfls-dashboard-nav {
+    padding: 16px 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.sfls-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #4b5563;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
+}
+
+.sfls-nav-item:hover {
+    background-color: #f3f4f6;
+    color: #1a1a2e;
+}
+
+.sfls-nav-item.active {
+    background-color: #4f46e5;
+    color: #fff;
+}
+
+.sfls-nav-item.active .dashicons {
+    color: #fff;
+}
+
+.sfls-nav-item .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.sfls-nav-item:hover .dashicons {
+    color: #4f46e5;
+}
+
+.sfls-nav-item.sfls-logout {
+    margin-top: auto;
+    color: #dc2626;
+}
+
+.sfls-nav-item.sfls-logout .dashicons {
+    color: #dc2626;
+}
+
+.sfls-nav-item.sfls-logout:hover {
+    background-color: #fef2f2;
+}
+
+/* ==========================================================================
+   Dashboard Title
+   ========================================================================== */
+
+.sfls-dashboard-title {
+    margin: 0 0 24px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.sfls-tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.sfls-tab-header .sfls-dashboard-title {
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Stats Grid
+   ========================================================================== */
+
+.sfls-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.sfls-stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sfls-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sfls-stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sfls-stat-icon .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.sfls-stat-icon.sfls-stat-completed {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.sfls-stat-icon.sfls-stat-lessons {
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+}
+
+.sfls-stat-icon.sfls-stat-certificates {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+}
+
+.sfls-stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.sfls-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.2;
+}
+
+.sfls-stat-label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   Section Styles
+   ========================================================================== */
+
+.sfls-section {
+    margin-bottom: 32px;
+}
+
+.sfls-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0 0 16px;
+}
+
+/* ==========================================================================
+   Course Grid & Cards
+   ========================================================================== */
+
+.sfls-course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.sfls-course-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sfls-course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.sfls-course-thumbnail {
+    position: relative;
+    padding-top: 56.25%;
+    overflow: hidden;
+}
+
+.sfls-course-thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sfls-progress-overlay {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sfls-course-content {
+    padding: 20px;
+}
+
+.sfls-course-title {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.sfls-course-title a {
+    color: #1a1a2e;
+    text-decoration: none;
+}
+
+.sfls-course-title a:hover {
+    color: #4f46e5;
+}
+
+.sfls-course-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.sfls-lessons-count {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sfls-lessons-count .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.sfls-progress-bar {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.sfls-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.sfls-continue-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #4f46e5;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: gap 0.2s ease;
+}
+
+.sfls-continue-btn:hover {
+    gap: 10px;
+}
+
+.sfls-continue-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   Activity List
+   ========================================================================== */
+
+.sfls-activity-list {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.sfls-activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sfls-activity-item:last-child {
+    border-bottom: none;
+}
+
+.sfls-activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sfls-activity-icon .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #6b7280;
+}
+
+.sfls-activity-icon.sfls-activity-lesson_completed {
+    background: #ecfdf5;
+}
+
+.sfls-activity-icon.sfls-activity-lesson_completed .dashicons {
+    color: #059669;
+}
+
+.sfls-activity-icon.sfls-activity-course_completed {
+    background: #eff6ff;
+}
+
+.sfls-activity-icon.sfls-activity-course_completed .dashicons {
+    color: #2563eb;
+}
+
+.sfls-activity-icon.sfls-activity-certificate {
+    background: #fef3c7;
+}
+
+.sfls-activity-icon.sfls-activity-certificate .dashicons {
+    color: #d97706;
+}
+
+.sfls-activity-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.sfls-activity-text {
+    margin: 0 0 4px;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.sfls-activity-text strong {
+    color: #1a1a2e;
+}
+
+.sfls-activity-time {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* ==========================================================================
+   Certificates Mini
+   ========================================================================== */
+
+.sfls-certificates-mini {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.sfls-certificate-mini {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sfls-certificate-mini:last-child {
+    border-bottom: none;
+}
+
+.sfls-certificate-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sfls-certificate-icon .dashicons {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    color: #fff;
+}
+
+.sfls-certificate-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sfls-certificate-info h5 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sfls-certificate-date {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.sfls-download-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.sfls-download-btn:hover {
+    background: #4f46e5;
+    color: #fff;
+}
+
+.sfls-download-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================================================
+   Courses List (Courses Tab)
+   ========================================================================== */
+
+.sfls-course-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sfls-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid #e2e4e9;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4b5563;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.sfls-filter-btn:hover {
+    border-color: #4f46e5;
+    color: #4f46e5;
+}
+
+.sfls-filter-btn.active {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
+}
+
+.sfls-filter-count {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.sfls-filter-btn.active .sfls-filter-count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sfls-courses-list {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.sfls-course-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s ease;
+}
+
+.sfls-course-row:last-child {
+    border-bottom: none;
+}
+
+.sfls-course-row:hover {
+    background: #f9fafb;
+}
+
+.sfls-course-thumb {
+    width: 120px;
+    height: 68px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sfls-course-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sfls-course-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sfls-course-placeholder .dashicons {
+    font-size: 24px;
+    color: #9ca3af;
+}
+
+.sfls-course-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.sfls-course-name {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sfls-course-name a {
+    color: #1a1a2e;
+    text-decoration: none;
+}
+
+.sfls-course-name a:hover {
+    color: #4f46e5;
+}
+
+.sfls-course-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.sfls-course-stats .sfls-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.sfls-course-stats .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.sfls-course-progress-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+}
+
+.sfls-progress-ring {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.sfls-progress-ring svg {
+    transform: rotate(-90deg);
+}
+
+.sfls-progress-bg {
+    fill: none;
+    stroke: #e5e7eb;
+    stroke-width: 3;
+}
+
+.sfls-progress-fill {
+    fill: none;
+    stroke: #4f46e5;
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.sfls-progress-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.sfls-lessons-progress {
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.sfls-course-actions-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 120px;
+}
+
+.sfls-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sfls-status-badge.sfls-completed {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.sfls-status-badge .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.sfls-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sfls-primary-btn:hover {
+    background: linear-gradient(135deg, #4338ca, #4f46e5);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.sfls-secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #fff;
+    color: #4f46e5;
+    border: 1px solid #e2e4e9;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sfls-secondary-btn:hover {
+    border-color: #4f46e5;
+    background: #f5f3ff;
+}
+
+.sfls-icon-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sfls-icon-btn:hover {
+    background: #e5e7eb;
+}
+
+.sfls-icon-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.sfls-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sfls-empty-state .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+.sfls-empty-state h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-empty-state p {
+    margin: 0 0 20px;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Certificates Tab
+   ========================================================================== */
+
+.sfls-certificates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.sfls-certificate-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sfls-certificate-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.sfls-certificate-preview {
+    position: relative;
+    padding-top: 70%;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.sfls-certificate-preview img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sfls-certificate-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.sfls-certificate-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #d97706;
+}
+
+.sfls-placeholder-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #92400e;
+}
+
+.sfls-certificate-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background: #059669;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sfls-certificate-badge .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #fff;
+}
+
+.sfls-certificate-content {
+    padding: 20px;
+}
+
+.sfls-certificate-title {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-certificate-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sfls-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sfls-meta-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9ca3af;
+}
+
+.sfls-meta-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.sfls-cert-id {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.sfls-certificate-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sfls-certificate-actions .sfls-primary-btn,
+.sfls-certificate-actions .sfls-secondary-btn {
+    flex: 1;
+    min-width: 100px;
+}
+
+.sfls-share-btn {
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Profile Tab
+   ========================================================================== */
+
+.sfls-profile-form {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.sfls-form-section {
+    padding: 24px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sfls-form-section:last-child {
+    border-bottom: none;
+}
+
+.sfls-section-heading {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.sfls-section-desc {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.sfls-avatar-upload {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.sfls-current-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sfls-current-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sfls-avatar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sfls-hidden {
+    display: none;
+}
+
+.sfls-help-text {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.sfls-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.sfls-form-group {
+    margin-bottom: 20px;
+}
+
+.sfls-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.sfls-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.sfls-form-group input[type="text"],
+.sfls-form-group input[type="email"],
+.sfls-form-group input[type="password"],
+.sfls-form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a2e;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sfls-form-group input:focus,
+.sfls-form-group textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.sfls-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.sfls-password-field {
+    position: relative;
+}
+
+.sfls-password-field input {
+    padding-right: 44px;
+}
+
+.sfls-toggle-password {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    transition: color 0.2s ease;
+}
+
+.sfls-toggle-password:hover {
+    color: #4f46e5;
+}
+
+.sfls-password-strength {
+    margin-top: 8px;
+    height: 4px;
+    border-radius: 2px;
+    background: #e5e7eb;
+    overflow: hidden;
+}
+
+.sfls-password-strength.weak::after {
+    content: '';
+    display: block;
+    width: 25%;
+    height: 100%;
+    background: #dc2626;
+}
+
+.sfls-password-strength.fair::after {
+    content: '';
+    display: block;
+    width: 50%;
+    height: 100%;
+    background: #f59e0b;
+}
+
+.sfls-password-strength.good::after {
+    content: '';
+    display: block;
+    width: 75%;
+    height: 100%;
+    background: #10b981;
+}
+
+.sfls-password-strength.strong::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #059669;
+}
+
+.sfls-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.sfls-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.sfls-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4f46e5;
+    cursor: pointer;
+}
+
+.sfls-checkbox-label {
+    font-size: 14px;
+    color: #374151;
+}
+
+.sfls-form-actions {
+    padding: 20px 24px;
+    background: #f9fafb;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Notice Messages
+   ========================================================================== */
+
+.sfls-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.sfls-notice-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.sfls-notice .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .sfls-dashboard-main {
+        padding: 24px;
+    }
+
+    .sfls-course-row {
+        flex-wrap: wrap;
+    }
+
+    .sfls-course-details {
+        flex: 1 1 calc(100% - 140px);
+    }
+
+    .sfls-course-progress-col {
+        order: 4;
+        flex: 0 0 auto;
+    }
+
+    .sfls-course-actions-col {
+        order: 5;
+        flex-direction: row;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .sfls-dashboard {
+        flex-direction: column;
+    }
+
+    .sfls-dashboard-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #e2e4e9;
+    }
+
+    .sfls-user-card {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 16px;
+    }
+
+    .sfls-user-avatar {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 0;
+    }
+
+    .sfls-dashboard-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 12px;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sfls-nav-item {
+        white-space: nowrap;
+        margin-bottom: 0;
+        padding: 10px 16px;
+    }
+
+    .sfls-nav-item.sfls-logout {
+        margin-top: 0;
+        margin-left: auto;
+    }
+
+    .sfls-dashboard-main {
+        padding: 20px 16px;
+    }
+
+    .sfls-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .sfls-stat-card {
+        padding: 16px;
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .sfls-stat-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sfls-stat-value {
+        font-size: 24px;
+    }
+
+    .sfls-course-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sfls-tab-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sfls-course-filters {
+        overflow-x: auto;
+        width: 100%;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+    }
+
+    .sfls-course-row {
+        padding: 16px;
+    }
+
+    .sfls-course-thumb {
+        width: 80px;
+        height: 45px;
+    }
+
+    .sfls-course-details {
+        flex: 1 1 100%;
+        order: 2;
+    }
+
+    .sfls-course-thumb {
+        order: 1;
+    }
+
+    .sfls-course-progress-col,
+    .sfls-course-actions-col {
+        width: 50%;
+    }
+
+    .sfls-certificates-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sfls-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .sfls-avatar-upload {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .sfls-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sfls-course-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sfls-certificate-meta {
+        flex-direction: column;
+    }
+
+    .sfls-certificate-actions {
+        flex-direction: column;
+    }
+
+    .sfls-certificate-actions .sfls-primary-btn,
+    .sfls-certificate-actions .sfls-secondary-btn {
+        width: 100%;
+    }
+
+    .sfls-share-btn {
+        align-self: center;
+    }
+}
