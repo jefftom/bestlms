@@ -1,0 +1,710 @@
+/**
+ * SwiftLMS Google Docs Import Styles
+ *
+ * @package SwiftLMS
+ */
+
+/* ==========================================================================
+   Container
+   ========================================================================== */
+
+.sfls-gdocs-wrap {
+    max-width: 1000px;
+    margin: 20px 20px 20px 0;
+}
+
+.sfls-gdocs-container {
+    margin-top: 20px;
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+
+.sfls-gdocs-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.sfls-gdocs-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.sfls-gdocs-card-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+}
+
+.sfls-gdocs-card-body {
+    padding: 25px;
+}
+
+.sfls-step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: #4f46e5;
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   Setup Step
+   ========================================================================== */
+
+.sfls-setup-instructions {
+    margin-bottom: 25px;
+}
+
+.sfls-setup-steps {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.sfls-setup-steps li {
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.sfls-redirect-uri {
+    display: inline-block;
+    padding: 8px 12px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    word-break: break-all;
+    margin: 5px 0;
+}
+
+.sfls-copy-btn {
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+.sfls-credentials-form .sfls-form-field {
+    margin-bottom: 20px;
+}
+
+.sfls-credentials-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.sfls-credentials-form input {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* ==========================================================================
+   Connect Step
+   ========================================================================== */
+
+.sfls-gdocs-connect .sfls-gdocs-card-body {
+    text-align: center;
+    padding: 40px;
+}
+
+.sfls-permissions-note {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.sfls-connect-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px !important;
+    font-size: 16px !important;
+}
+
+.sfls-connect-btn .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.sfls-reconfigure-note {
+    margin-top: 25px;
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   Import Step - Tabs
+   ========================================================================== */
+
+.sfls-input-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 20px;
+}
+
+.sfls-tab-btn {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sfls-tab-btn:hover {
+    color: #4f46e5;
+}
+
+.sfls-tab-btn.active {
+    color: #4f46e5;
+    border-bottom-color: #4f46e5;
+}
+
+.sfls-tab-content {
+    display: none;
+}
+
+.sfls-tab-content.active {
+    display: block;
+}
+
+/* ==========================================================================
+   Search Box
+   ========================================================================== */
+
+.sfls-search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.sfls-search-box input {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+.sfls-search-box button {
+    padding: 0 15px;
+}
+
+.sfls-search-box .dashicons {
+    line-height: 1.8;
+}
+
+/* ==========================================================================
+   Search Results
+   ========================================================================== */
+
+.sfls-search-results {
+    min-height: 100px;
+}
+
+.sfls-doc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sfls-doc-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sfls-doc-item:hover {
+    background: #f3f4f6;
+    border-color: #4f46e5;
+}
+
+.sfls-doc-item.selected {
+    background: #eef2ff;
+    border-color: #4f46e5;
+}
+
+.sfls-doc-thumbnail {
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sfls-doc-thumbnail img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.sfls-doc-thumbnail .dashicons {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #4285f4;
+}
+
+.sfls-doc-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sfls-doc-name {
+    font-weight: 600;
+    color: #1d2327;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sfls-doc-date {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.sfls-no-results {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+}
+
+.sfls-loading {
+    text-align: center;
+    padding: 40px;
+}
+
+.sfls-loading-spinner {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: sfls-spin 1s linear infinite;
+}
+
+@keyframes sfls-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   URL Input
+   ========================================================================== */
+
+.sfls-url-input {
+    display: flex;
+    gap: 10px;
+}
+
+.sfls-url-input input {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+.sfls-url-hint {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Preview Section
+   ========================================================================== */
+
+.sfls-preview-section {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.sfls-preview-section h3 {
+    margin: 0 0 20px;
+    font-size: 16px;
+}
+
+.sfls-preview-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.sfls-preview-title {
+    flex: 1;
+}
+
+.sfls-preview-title h4 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+.sfls-preview-title p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.sfls-preview-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.sfls-preview-stat {
+    text-align: center;
+    padding: 10px 20px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+.sfls-preview-stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+.sfls-preview-stat-label {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Structure Preview
+   ========================================================================== */
+
+.sfls-structure-preview {
+    margin-bottom: 25px;
+}
+
+.sfls-structure-preview h4 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sfls-structure-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+.sfls-structure-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.sfls-structure-item:last-child {
+    border-bottom: none;
+}
+
+.sfls-structure-level {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    color: #6b7280;
+}
+
+.sfls-structure-level-h1 {
+    background: #4f46e5;
+    color: #fff;
+}
+
+.sfls-structure-level-h2 {
+    background: #8b5cf6;
+    color: #fff;
+}
+
+.sfls-structure-level-h3 {
+    background: #a78bfa;
+    color: #fff;
+}
+
+.sfls-structure-title {
+    flex: 1;
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   Import Options
+   ========================================================================== */
+
+.sfls-import-options {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.sfls-import-options h4 {
+    margin: 0 0 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sfls-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.sfls-option-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.sfls-option-field select {
+    width: 100%;
+}
+
+.sfls-checkbox-field label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.sfls-checkbox-field input {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Import Actions
+   ========================================================================== */
+
+.sfls-import-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.sfls-import-actions .button-hero {
+    padding: 12px 30px !important;
+}
+
+/* ==========================================================================
+   Import Progress
+   ========================================================================== */
+
+.sfls-import-progress {
+    text-align: center;
+    padding: 60px;
+}
+
+.sfls-progress-spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: sfls-spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.sfls-progress-text {
+    font-size: 16px;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   Import Result
+   ========================================================================== */
+
+.sfls-import-result {
+    padding: 30px;
+    text-align: center;
+}
+
+.sfls-import-success {
+    color: #059669;
+}
+
+.sfls-import-success .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+}
+
+.sfls-import-success h3 {
+    margin: 0 0 15px;
+    color: #059669;
+}
+
+.sfls-import-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.sfls-import-stat {
+    text-align: center;
+}
+
+.sfls-import-stat-value {
+    display: block;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1d2327;
+}
+
+.sfls-import-stat-label {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.sfls-import-actions-result {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.sfls-import-error {
+    color: #dc2626;
+}
+
+.sfls-import-error .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+}
+
+.sfls-error-list {
+    text-align: left;
+    max-width: 500px;
+    margin: 15px auto;
+    padding: 15px;
+    background: #fef2f2;
+    border-radius: 6px;
+}
+
+/* ==========================================================================
+   Help Section
+   ========================================================================== */
+
+.sfls-gdocs-help .sfls-gdocs-card-header {
+    background: #f0fdf4;
+    border-color: #86efac;
+}
+
+.sfls-help-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.sfls-help-column h4 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #059669;
+}
+
+.sfls-help-column ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.sfls-help-column li {
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.sfls-quiz-example {
+    background: #f3f4f6;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.sfls-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 782px) {
+    .sfls-gdocs-wrap {
+        margin-right: 10px;
+    }
+
+    .sfls-options-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sfls-help-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .sfls-preview-header {
+        flex-direction: column;
+    }
+
+    .sfls-preview-stats {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .sfls-import-stats {
+        flex-wrap: wrap;
+    }
+}
