@@ -83,6 +83,11 @@ class CertificatesModule extends AbstractModule {
         add_action( 'wp_ajax_sfls_download_certificate', array( $this, 'ajax_download_certificate' ) );
         add_action( 'wp_ajax_nopriv_sfls_download_certificate', array( $this, 'ajax_download_certificate' ) );
 
+        // New template builder AJAX handlers.
+        add_action( 'wp_ajax_sfls_preview_certificate_template', array( $this, 'ajax_preview_template' ) );
+        add_action( 'wp_ajax_sfls_preview_certificate_fullscreen', array( $this, 'ajax_preview_fullscreen' ) );
+        add_action( 'wp_ajax_sfls_get_template_defaults', array( $this, 'ajax_get_template_defaults' ) );
+
         // Auto-generate certificate on course completion.
         add_action( 'swiftlms_course_completed', array( $this, 'auto_generate_certificate' ), 10, 2 );
 
@@ -162,6 +167,39 @@ class CertificatesModule extends AbstractModule {
 
         wp_enqueue_media();
 
+        // Enqueue certificate builder assets.
+        $module_url = plugin_dir_url( __FILE__ );
+
+        wp_enqueue_style(
+            'sfls-certificate-builder',
+            $module_url . 'assets/css/certificate-builder.css',
+            array(),
+            SWIFTLMS_VERSION
+        );
+
+        wp_enqueue_script(
+            'sfls-certificate-builder',
+            $module_url . 'assets/js/certificate-builder.js',
+            array( 'jquery', 'wp-util' ),
+            SWIFTLMS_VERSION,
+            true
+        );
+
+        wp_localize_script( 'sfls-certificate-builder', 'sflsCertBuilder', array(
+            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( 'sfls_cert_builder' ),
+            'strings' => array(
+                'selectImage'   => __( 'Select Image', 'swiftlms' ),
+                'useImage'      => __( 'Use this image', 'swiftlms' ),
+                'removeImage'   => __( 'Remove', 'swiftlms' ),
+                'uploadImage'   => __( 'Upload Image', 'swiftlms' ),
+                'confirmReset'  => __( 'Are you sure you want to reset customizations to defaults?', 'swiftlms' ),
+                'saving'        => __( 'Saving...', 'swiftlms' ),
+                'saved'         => __( 'Saved!', 'swiftlms' ),
+            ),
+        ) );
+
+        // Legacy inline script for backwards compatibility.
         wp_add_inline_script(
             'jquery',
             "
@@ -474,6 +512,93 @@ class CertificatesModule extends AbstractModule {
         $settings  = Certificate::get_template_settings( $cert->template_id );
         $generator = new PDFGenerator( $cert, $settings );
         $generator->download();
+    }
+
+    /**
+     * AJAX: Preview certificate template.
+     *
+     * @return void
+     */
+    public function ajax_preview_template(): void {
+        check_ajax_referer( 'sfls_cert_builder', '_wpnonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+        }
+
+        $template_id    = isset( $_POST['template_id'] ) ? sanitize_text_field( wp_unslash( $_POST['template_id'] ) ) : '';
+        $customizations = isset( $_POST['customizations'] ) ? json_decode( wp_unslash( $_POST['customizations'] ), true ) : array();
+
+        if ( empty( $template_id ) ) {
+            wp_send_json_error( array( 'message' => 'No template specified' ) );
+        }
+
+        // Sanitize customizations.
+        if ( is_array( $customizations ) ) {
+            $customizations = array_map( 'sanitize_text_field', $customizations );
+        } else {
+            $customizations = array();
+        }
+
+        $html = PDFGenerator::preview_template( $template_id, $customizations );
+
+        wp_send_json_success( array( 'html' => $html ) );
+    }
+
+    /**
+     * AJAX: Preview certificate fullscreen (in new window).
+     *
+     * @return void
+     */
+    public function ajax_preview_fullscreen(): void {
+        check_ajax_referer( 'sfls_cert_builder', '_wpnonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_die( 'Unauthorized' );
+        }
+
+        $template_id    = isset( $_GET['template_id'] ) ? sanitize_text_field( wp_unslash( $_GET['template_id'] ) ) : '';
+        $customizations = isset( $_GET['customizations'] ) ? json_decode( wp_unslash( $_GET['customizations'] ), true ) : array();
+
+        if ( empty( $template_id ) ) {
+            wp_die( 'No template specified' );
+        }
+
+        // Sanitize customizations.
+        if ( is_array( $customizations ) ) {
+            $customizations = array_map( 'sanitize_text_field', $customizations );
+        } else {
+            $customizations = array();
+        }
+
+        PDFGenerator::stream_preview( $template_id, $customizations );
+    }
+
+    /**
+     * AJAX: Get template defaults.
+     *
+     * @return void
+     */
+    public function ajax_get_template_defaults(): void {
+        check_ajax_referer( 'sfls_cert_builder', '_wpnonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+        }
+
+        $template_id = isset( $_POST['template_id'] ) ? sanitize_text_field( wp_unslash( $_POST['template_id'] ) ) : '';
+
+        if ( empty( $template_id ) ) {
+            wp_send_json_error( array( 'message' => 'No template specified' ) );
+        }
+
+        $renderer = new TemplateRenderer( $template_id );
+        $info     = $renderer->get_template_info();
+
+        wp_send_json_success( array(
+            'template'     => $info,
+            'customizable' => $info['customizable'] ?? array(),
+        ) );
     }
 
     /**

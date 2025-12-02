@@ -1,0 +1,248 @@
+{
+  "id": "soft-pastel",
+  "name": "Soft Pastel",
+  "description": "Gentle, friendly design with soft pastel colors",
+  "category": "creative",
+  "size": {
+    "width": 792,
+    "height": 612,
+    "unit": "pt"
+  },
+  "orientation": "landscape",
+  "background": {
+    "type": "color",
+    "value": "#fef7f0"
+  },
+  "customizable": {
+    "primaryColor": "#374151",
+    "secondaryColor": "#6b7280",
+    "accentColor": "#f472b6",
+    "titleFont": "Quicksand",
+    "bodyFont": "Nunito",
+    "nameFont": "Dancing Script"
+  },
+  "elements": [
+    {
+      "id": "bg-shape-1",
+      "type": "shape",
+      "shape": "circle",
+      "x": -50,
+      "y": -50,
+      "width": 200,
+      "height": 200,
+      "fill": "#fce7f3",
+      "opacity": 0.5
+    },
+    {
+      "id": "bg-shape-2",
+      "type": "shape",
+      "shape": "circle",
+      "x": 650,
+      "y": 450,
+      "width": 180,
+      "height": 180,
+      "fill": "#ddd6fe",
+      "opacity": 0.5
+    },
+    {
+      "id": "bg-shape-3",
+      "type": "shape",
+      "shape": "circle",
+      "x": 700,
+      "y": -30,
+      "width": 120,
+      "height": 120,
+      "fill": "#bfdbfe",
+      "opacity": 0.4
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "content": "Certificate of Completion",
+      "x": 396,
+      "y": 80,
+      "width": 600,
+      "fontSize": 42,
+      "fontFamily": "{titleFont}",
+      "fontWeight": "bold",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "heart-divider",
+      "type": "text",
+      "content": "♥",
+      "x": 396,
+      "y": 135,
+      "fontSize": 20,
+      "fontFamily": "serif",
+      "fill": "{accentColor}",
+      "align": "center"
+    },
+    {
+      "id": "congratulations",
+      "type": "text",
+      "content": "Congratulations!",
+      "x": 396,
+      "y": 170,
+      "width": 400,
+      "fontSize": 16,
+      "fontFamily": "{bodyFont}",
+      "fill": "{accentColor}",
+      "align": "center"
+    },
+    {
+      "id": "this-certifies",
+      "type": "text",
+      "content": "This certificate is happily awarded to",
+      "x": 396,
+      "y": 210,
+      "width": 500,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "student-name",
+      "type": "dynamic_field",
+      "field": "student_name",
+      "x": 396,
+      "y": 260,
+      "width": 650,
+      "fontSize": 52,
+      "fontFamily": "{nameFont}",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "for-completing",
+      "type": "text",
+      "content": "for successfully completing",
+      "x": 396,
+      "y": 330,
+      "width": 400,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "course-title",
+      "type": "dynamic_field",
+      "field": "course_title",
+      "x": 396,
+      "y": 370,
+      "width": 600,
+      "fontSize": 26,
+      "fontFamily": "{titleFont}",
+      "fontWeight": "600",
+      "fill": "{accentColor}",
+      "align": "center"
+    },
+    {
+      "id": "date-circle",
+      "type": "shape",
+      "shape": "circle",
+      "x": 166,
+      "y": 440,
+      "width": 90,
+      "height": 90,
+      "fill": "#fce7f3"
+    },
+    {
+      "id": "date-label",
+      "type": "text",
+      "content": "DATE",
+      "x": 211,
+      "y": 465,
+      "width": 80,
+      "fontSize": 9,
+      "fontFamily": "{bodyFont}",
+      "fontWeight": "bold",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "completion-date",
+      "type": "dynamic_field",
+      "field": "completion_date_short",
+      "x": 211,
+      "y": 488,
+      "width": 80,
+      "fontSize": 12,
+      "fontFamily": "{bodyFont}",
+      "fontWeight": "600",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "sig-circle",
+      "type": "shape",
+      "shape": "circle",
+      "x": 536,
+      "y": 440,
+      "width": 90,
+      "height": 90,
+      "fill": "#ddd6fe"
+    },
+    {
+      "id": "sig-label",
+      "type": "text",
+      "content": "SIGNED",
+      "x": 581,
+      "y": 465,
+      "width": 80,
+      "fontSize": 9,
+      "fontFamily": "{bodyFont}",
+      "fontWeight": "bold",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "instructor-name",
+      "type": "dynamic_field",
+      "field": "instructor_name",
+      "x": 581,
+      "y": 488,
+      "width": 80,
+      "fontSize": 11,
+      "fontFamily": "{nameFont}",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "footer-stars",
+      "type": "text",
+      "content": "✦  ✦  ✦",
+      "x": 396,
+      "y": 560,
+      "fontSize": 14,
+      "fontFamily": "serif",
+      "fill": "{accentColor}",
+      "align": "center"
+    },
+    {
+      "id": "cert-id",
+      "type": "dynamic_field",
+      "field": "certificate_id",
+      "x": 396,
+      "y": 585,
+      "width": 200,
+      "fontSize": 9,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "qr-code",
+      "type": "qr_code",
+      "field": "certificate_url",
+      "x": 50,
+      "y": 540,
+      "size": 50,
+      "foreground": "{primaryColor}",
+      "background": "#fef7f0"
+    }
+  ]
+}

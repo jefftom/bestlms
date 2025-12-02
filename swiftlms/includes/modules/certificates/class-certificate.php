@@ -133,6 +133,33 @@ class Certificate extends AbstractPostType {
     }
 
     /**
+     * Available Google Fonts for certificates.
+     *
+     * @var array
+     */
+    const GOOGLE_FONTS = array(
+        'Playfair Display',
+        'Great Vibes',
+        'Open Sans',
+        'Montserrat',
+        'Lora',
+        'Libre Baskerville',
+        'Tangerine',
+        'Dancing Script',
+        'Quicksand',
+        'Nunito',
+        'Poppins',
+        'Inter',
+        'Roboto',
+        'Raleway',
+        'Cinzel',
+        'DM Sans',
+        'Source Serif Pro',
+        'Libre Franklin',
+        'Space Grotesk',
+    );
+
+    /**
      * Render design meta box.
      *
      * @param \WP_Post $post Current post.
@@ -141,6 +168,196 @@ class Certificate extends AbstractPostType {
     public function render_design_meta_box( $post ): void {
         wp_nonce_field( 'sfls_certificate_settings', 'sfls_certificate_nonce' );
 
+        // Get saved template settings.
+        $json_template    = get_post_meta( $post->ID, '_sfls_json_template', true ) ?: 'modern-minimal';
+        $customizations   = get_post_meta( $post->ID, '_sfls_template_customizations', true ) ?: array();
+
+        // Get available templates.
+        $templates = TemplateRenderer::get_available_templates();
+
+        // Load template defaults if no customizations.
+        if ( empty( $customizations ) && $json_template ) {
+            $renderer = new TemplateRenderer( $json_template );
+            $customizations = $renderer->get_customizable_options();
+        }
+        ?>
+        <div class="sfls-certificate-builder">
+            <!-- Hidden fields -->
+            <input type="hidden" name="sfls_json_template" id="sfls_json_template" value="<?php echo esc_attr( $json_template ); ?>">
+            <input type="hidden" name="sfls_template_customizations" id="sfls_template_customizations" value="<?php echo esc_attr( wp_json_encode( $customizations ) ); ?>">
+
+            <!-- Tabs -->
+            <div class="sfls-tabs">
+                <button type="button" class="sfls-tab active" data-tab="tab-templates">
+                    <?php esc_html_e( 'Choose Template', 'swiftlms' ); ?>
+                </button>
+                <button type="button" class="sfls-tab" data-tab="tab-customize">
+                    <?php esc_html_e( 'Customize', 'swiftlms' ); ?>
+                </button>
+            </div>
+
+            <!-- Templates Tab -->
+            <div id="tab-templates" class="sfls-tab-content active">
+                <p class="description"><?php esc_html_e( 'Select a template design for your certificate:', 'swiftlms' ); ?></p>
+                <div class="sfls-template-selector">
+                    <?php foreach ( $templates as $template ) : ?>
+                        <div class="sfls-template-card <?php echo $json_template === $template['id'] ? 'selected' : ''; ?>"
+                             data-template-id="<?php echo esc_attr( $template['id'] ); ?>">
+                            <div class="sfls-template-preview">
+                                <div class="sfls-template-preview-placeholder" style="background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: #999;">
+                                    <?php echo esc_html( substr( $template['name'], 0, 2 ) ); ?>
+                                </div>
+                            </div>
+                            <h4 class="sfls-template-name"><?php echo esc_html( $template['name'] ); ?></h4>
+                            <p class="sfls-template-description"><?php echo esc_html( $template['description'] ); ?></p>
+                            <span class="sfls-template-badge"><?php echo esc_html( $template['category'] ); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Customize Tab -->
+            <div id="tab-customize" class="sfls-tab-content">
+                <div class="sfls-customizer-wrapper">
+                    <div class="sfls-customizer-sidebar">
+                        <!-- Colors Section -->
+                        <div class="sfls-customizer-section">
+                            <h4 class="sfls-customizer-section-title"><?php esc_html_e( 'Colors', 'swiftlms' ); ?></h4>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Primary Color', 'swiftlms' ); ?></label>
+                                <div class="sfls-color-picker-wrapper">
+                                    <input type="color" class="sfls-color-swatch" value="<?php echo esc_attr( $customizations['primaryColor'] ?? '#1a1a1a' ); ?>">
+                                    <input type="text" class="sfls-customizer-input sfls-color-input" data-key="primaryColor"
+                                           value="<?php echo esc_attr( $customizations['primaryColor'] ?? '#1a1a1a' ); ?>">
+                                </div>
+                            </div>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Secondary Color', 'swiftlms' ); ?></label>
+                                <div class="sfls-color-picker-wrapper">
+                                    <input type="color" class="sfls-color-swatch" value="<?php echo esc_attr( $customizations['secondaryColor'] ?? '#666666' ); ?>">
+                                    <input type="text" class="sfls-customizer-input sfls-color-input" data-key="secondaryColor"
+                                           value="<?php echo esc_attr( $customizations['secondaryColor'] ?? '#666666' ); ?>">
+                                </div>
+                            </div>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Accent Color', 'swiftlms' ); ?></label>
+                                <div class="sfls-color-picker-wrapper">
+                                    <input type="color" class="sfls-color-swatch" value="<?php echo esc_attr( $customizations['accentColor'] ?? '#0073aa' ); ?>">
+                                    <input type="text" class="sfls-customizer-input sfls-color-input" data-key="accentColor"
+                                           value="<?php echo esc_attr( $customizations['accentColor'] ?? '#0073aa' ); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fonts Section -->
+                        <div class="sfls-customizer-section">
+                            <h4 class="sfls-customizer-section-title"><?php esc_html_e( 'Fonts', 'swiftlms' ); ?></h4>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Title Font', 'swiftlms' ); ?></label>
+                                <select class="sfls-font-select sfls-customizer-input" data-key="titleFont">
+                                    <?php foreach ( self::GOOGLE_FONTS as $font ) : ?>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $customizations['titleFont'] ?? 'Playfair Display', $font ); ?>>
+                                            <?php echo esc_html( $font ); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="sfls-font-preview" style="font-family: '<?php echo esc_attr( $customizations['titleFont'] ?? 'Playfair Display' ); ?>';">
+                                    <?php esc_html_e( 'Preview Text', 'swiftlms' ); ?>
+                                </div>
+                            </div>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Body Font', 'swiftlms' ); ?></label>
+                                <select class="sfls-font-select sfls-customizer-input" data-key="bodyFont">
+                                    <?php foreach ( self::GOOGLE_FONTS as $font ) : ?>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $customizations['bodyFont'] ?? 'Open Sans', $font ); ?>>
+                                            <?php echo esc_html( $font ); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Name Font', 'swiftlms' ); ?></label>
+                                <select class="sfls-font-select sfls-customizer-input" data-key="nameFont">
+                                    <?php foreach ( self::GOOGLE_FONTS as $font ) : ?>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $customizations['nameFont'] ?? 'Great Vibes', $font ); ?>>
+                                            <?php echo esc_html( $font ); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Images Section -->
+                        <div class="sfls-customizer-section">
+                            <h4 class="sfls-customizer-section-title"><?php esc_html_e( 'Images', 'swiftlms' ); ?></h4>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Logo', 'swiftlms' ); ?></label>
+                                <div class="sfls-image-upload <?php echo ! empty( $customizations['logo'] ) ? 'has-image' : ''; ?>" data-key="logo">
+                                    <?php if ( ! empty( $customizations['logo'] ) ) : ?>
+                                        <img src="<?php echo esc_url( $customizations['logo'] ); ?>" class="sfls-image-upload-preview">
+                                        <div class="sfls-image-upload-actions">
+                                            <span class="sfls-image-upload-remove"><?php esc_html_e( 'Remove', 'swiftlms' ); ?></span>
+                                        </div>
+                                    <?php else : ?>
+                                        <span class="sfls-image-upload-icon dashicons dashicons-upload"></span>
+                                        <span class="sfls-image-upload-text"><?php esc_html_e( 'Upload Logo', 'swiftlms' ); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <div class="sfls-customizer-field">
+                                <label class="sfls-customizer-label"><?php esc_html_e( 'Signature', 'swiftlms' ); ?></label>
+                                <div class="sfls-image-upload <?php echo ! empty( $customizations['signature'] ) ? 'has-image' : ''; ?>" data-key="signature">
+                                    <?php if ( ! empty( $customizations['signature'] ) ) : ?>
+                                        <img src="<?php echo esc_url( $customizations['signature'] ); ?>" class="sfls-image-upload-preview">
+                                        <div class="sfls-image-upload-actions">
+                                            <span class="sfls-image-upload-remove"><?php esc_html_e( 'Remove', 'swiftlms' ); ?></span>
+                                        </div>
+                                    <?php else : ?>
+                                        <span class="sfls-image-upload-icon dashicons dashicons-upload"></span>
+                                        <span class="sfls-image-upload-text"><?php esc_html_e( 'Upload Signature', 'swiftlms' ); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="sfls-customizer-actions">
+                            <button type="button" class="sfls-btn sfls-btn-secondary sfls-reset-customizations">
+                                <?php esc_html_e( 'Reset', 'swiftlms' ); ?>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sfls-customizer-preview">
+                        <div class="sfls-preview-controls">
+                            <div class="sfls-zoom-controls">
+                                <button type="button" class="sfls-zoom-btn sfls-zoom-out">−</button>
+                                <span class="sfls-zoom-level">50%</span>
+                                <button type="button" class="sfls-zoom-btn sfls-zoom-in">+</button>
+                            </div>
+                            <button type="button" class="sfls-btn sfls-btn-sm sfls-btn-secondary sfls-preview-btn">
+                                <span class="dashicons dashicons-external"></span>
+                                <?php esc_html_e( 'Full Preview', 'swiftlms' ); ?>
+                            </button>
+                        </div>
+                        <div class="sfls-preview-frame">
+                            <!-- Preview iframe will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+
+        // Legacy fields for backwards compatibility (hidden).
         $orientation    = get_post_meta( $post->ID, '_sfls_orientation', true ) ?: 'landscape';
         $paper_size     = get_post_meta( $post->ID, '_sfls_paper_size', true ) ?: 'A4';
         $bg_color       = get_post_meta( $post->ID, '_sfls_bg_color', true ) ?: '#ffffff';
@@ -443,7 +660,29 @@ class Certificate extends AbstractPostType {
             return;
         }
 
-        // Text fields.
+        // Save JSON template ID.
+        if ( isset( $_POST['sfls_json_template'] ) ) {
+            update_post_meta( $post_id, '_sfls_json_template', sanitize_text_field( wp_unslash( $_POST['sfls_json_template'] ) ) );
+        }
+
+        // Save template customizations.
+        if ( isset( $_POST['sfls_template_customizations'] ) ) {
+            $customizations_raw = wp_unslash( $_POST['sfls_template_customizations'] );
+            $customizations     = json_decode( $customizations_raw, true );
+
+            if ( is_array( $customizations ) ) {
+                // Sanitize each value.
+                $sanitized = array();
+                foreach ( $customizations as $key => $value ) {
+                    $sanitized[ sanitize_key( $key ) ] = is_array( $value )
+                        ? array_map( 'sanitize_text_field', $value )
+                        : sanitize_text_field( $value );
+                }
+                update_post_meta( $post_id, '_sfls_template_customizations', $sanitized );
+            }
+        }
+
+        // Legacy text fields (for backwards compatibility).
         $text_fields = array(
             'sfls_orientation', 'sfls_paper_size', 'sfls_bg_color', 'sfls_bg_image',
             'sfls_border_style', 'sfls_border_color', 'sfls_border_width',

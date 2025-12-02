@@ -1,0 +1,326 @@
+{
+  "id": "achievement-gold",
+  "name": "Achievement Gold",
+  "description": "Award-style certificate with premium gold accents",
+  "category": "award",
+  "size": {
+    "width": 792,
+    "height": 612,
+    "unit": "pt"
+  },
+  "orientation": "landscape",
+  "background": {
+    "type": "gradient",
+    "value": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
+  },
+  "customizable": {
+    "primaryColor": "#ffffff",
+    "secondaryColor": "#a0aec0",
+    "accentColor": "#d4af37",
+    "titleFont": "Cinzel",
+    "bodyFont": "Raleway",
+    "nameFont": "Great Vibes"
+  },
+  "elements": [
+    {
+      "id": "bg-dark",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 792,
+      "height": 612,
+      "fill": "#1a1a2e"
+    },
+    {
+      "id": "corner-accent-tl",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 100,
+      "height": 5,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "corner-accent-tl2",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 5,
+      "height": 100,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "corner-accent-tr",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 692,
+      "y": 0,
+      "width": 100,
+      "height": 5,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "corner-accent-tr2",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 787,
+      "y": 0,
+      "width": 5,
+      "height": 100,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "corner-accent-bl",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0,
+      "y": 607,
+      "width": 100,
+      "height": 5,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "corner-accent-bl2",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0,
+      "y": 512,
+      "width": 5,
+      "height": 100,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "corner-accent-br",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 692,
+      "y": 607,
+      "width": 100,
+      "height": 5,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "corner-accent-br2",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 787,
+      "y": 512,
+      "width": 5,
+      "height": 100,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "star-icon",
+      "type": "text",
+      "content": "★",
+      "x": 396,
+      "y": 50,
+      "fontSize": 40,
+      "fontFamily": "serif",
+      "fill": "{accentColor}",
+      "align": "center"
+    },
+    {
+      "id": "certificate-label",
+      "type": "text",
+      "content": "CERTIFICATE OF",
+      "x": 396,
+      "y": 100,
+      "width": 400,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fontWeight": "500",
+      "fill": "{accentColor}",
+      "align": "center",
+      "letterSpacing": 8
+    },
+    {
+      "id": "achievement-title",
+      "type": "text",
+      "content": "ACHIEVEMENT",
+      "x": 396,
+      "y": 130,
+      "width": 600,
+      "fontSize": 52,
+      "fontFamily": "{titleFont}",
+      "fontWeight": "bold",
+      "fill": "{accentColor}",
+      "align": "center",
+      "letterSpacing": 8
+    },
+    {
+      "id": "divider-left",
+      "type": "shape",
+      "shape": "line",
+      "x": 100,
+      "y": 195,
+      "width": 200,
+      "height": 1,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "divider-star",
+      "type": "text",
+      "content": "✦",
+      "x": 396,
+      "y": 188,
+      "fontSize": 14,
+      "fontFamily": "serif",
+      "fill": "{accentColor}",
+      "align": "center"
+    },
+    {
+      "id": "divider-right",
+      "type": "shape",
+      "shape": "line",
+      "x": 492,
+      "y": 195,
+      "width": 200,
+      "height": 1,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "presented-to",
+      "type": "text",
+      "content": "This certificate is proudly presented to",
+      "x": 396,
+      "y": 225,
+      "width": 500,
+      "fontSize": 13,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "student-name",
+      "type": "dynamic_field",
+      "field": "student_name",
+      "x": 396,
+      "y": 275,
+      "width": 650,
+      "fontSize": 52,
+      "fontFamily": "{nameFont}",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "recognition-text",
+      "type": "text",
+      "content": "in recognition of outstanding completion of",
+      "x": 396,
+      "y": 345,
+      "width": 500,
+      "fontSize": 13,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "course-title",
+      "type": "dynamic_field",
+      "field": "course_title",
+      "x": 396,
+      "y": 385,
+      "width": 600,
+      "fontSize": 26,
+      "fontFamily": "{titleFont}",
+      "fontWeight": "normal",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "date-section",
+      "type": "text",
+      "content": "Awarded on",
+      "x": 200,
+      "y": 475,
+      "width": 150,
+      "fontSize": 11,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "completion-date",
+      "type": "dynamic_field",
+      "field": "completion_date",
+      "x": 200,
+      "y": 495,
+      "width": 150,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fontWeight": "600",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "date-line",
+      "type": "shape",
+      "shape": "line",
+      "x": 125,
+      "y": 520,
+      "width": 150,
+      "height": 1,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "signature-section",
+      "type": "text",
+      "content": "Authorized Signature",
+      "x": 592,
+      "y": 520,
+      "width": 150,
+      "fontSize": 11,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "instructor-name",
+      "type": "dynamic_field",
+      "field": "instructor_name",
+      "x": 592,
+      "y": 495,
+      "width": 150,
+      "fontSize": 16,
+      "fontFamily": "{nameFont}",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "sig-line",
+      "type": "shape",
+      "shape": "line",
+      "x": 517,
+      "y": 520,
+      "width": 150,
+      "height": 1,
+      "fill": "{accentColor}"
+    },
+    {
+      "id": "cert-id",
+      "type": "dynamic_field",
+      "field": "certificate_id",
+      "x": 396,
+      "y": 565,
+      "width": 200,
+      "fontSize": 10,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "qr-code",
+      "type": "qr_code",
+      "field": "certificate_url",
+      "x": 60,
+      "y": 520,
+      "size": 50,
+      "foreground": "{accentColor}",
+      "background": "#1a1a2e"
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "id": "simple-clean",
+  "name": "Simple Clean",
+  "description": "Minimalist design focusing on content",
+  "category": "minimal",
+  "size": {
+    "width": 792,
+    "height": 612,
+    "unit": "pt"
+  },
+  "orientation": "landscape",
+  "background": {
+    "type": "color",
+    "value": "#ffffff"
+  },
+  "customizable": {
+    "primaryColor": "#18181b",
+    "secondaryColor": "#71717a",
+    "accentColor": "#18181b",
+    "titleFont": "Libre Franklin",
+    "bodyFont": "Libre Franklin",
+    "nameFont": "Libre Franklin"
+  },
+  "elements": [
+    {
+      "id": "border",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 40,
+      "y": 40,
+      "width": 712,
+      "height": 532,
+      "fill": "transparent",
+      "stroke": "#e4e4e7",
+      "strokeWidth": 1
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "content": "CERTIFICATE OF COMPLETION",
+      "x": 396,
+      "y": 100,
+      "width": 600,
+      "fontSize": 24,
+      "fontFamily": "{titleFont}",
+      "fontWeight": "600",
+      "fill": "{primaryColor}",
+      "align": "center",
+      "letterSpacing": 6
+    },
+    {
+      "id": "divider-top",
+      "type": "shape",
+      "shape": "line",
+      "x": 296,
+      "y": 145,
+      "width": 200,
+      "height": 1,
+      "fill": "{primaryColor}"
+    },
+    {
+      "id": "this-certifies",
+      "type": "text",
+      "content": "This certifies that",
+      "x": 396,
+      "y": 180,
+      "width": 400,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "student-name",
+      "type": "dynamic_field",
+      "field": "student_name",
+      "x": 396,
+      "y": 230,
+      "width": 600,
+      "fontSize": 42,
+      "fontFamily": "{nameFont}",
+      "fontWeight": "bold",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "has-completed",
+      "type": "text",
+      "content": "has successfully completed",
+      "x": 396,
+      "y": 295,
+      "width": 400,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "course-title",
+      "type": "dynamic_field",
+      "field": "course_title",
+      "x": 396,
+      "y": 340,
+      "width": 600,
+      "fontSize": 24,
+      "fontFamily": "{titleFont}",
+      "fontWeight": "600",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "divider-bottom",
+      "type": "shape",
+      "shape": "line",
+      "x": 296,
+      "y": 400,
+      "width": 200,
+      "height": 1,
+      "fill": "{primaryColor}"
+    },
+    {
+      "id": "date-label",
+      "type": "text",
+      "content": "Date",
+      "x": 250,
+      "y": 480,
+      "width": 150,
+      "fontSize": 11,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "date-line",
+      "type": "shape",
+      "shape": "line",
+      "x": 175,
+      "y": 470,
+      "width": 150,
+      "height": 1,
+      "fill": "{secondaryColor}"
+    },
+    {
+      "id": "completion-date",
+      "type": "dynamic_field",
+      "field": "completion_date",
+      "x": 250,
+      "y": 445,
+      "width": 150,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "signature-label",
+      "type": "text",
+      "content": "Signature",
+      "x": 542,
+      "y": 480,
+      "width": 150,
+      "fontSize": 11,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "signature-line",
+      "type": "shape",
+      "shape": "line",
+      "x": 467,
+      "y": 470,
+      "width": 150,
+      "height": 1,
+      "fill": "{secondaryColor}"
+    },
+    {
+      "id": "instructor-name",
+      "type": "dynamic_field",
+      "field": "instructor_name",
+      "x": 542,
+      "y": 445,
+      "width": 150,
+      "fontSize": 14,
+      "fontFamily": "{bodyFont}",
+      "fill": "{primaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "cert-id",
+      "type": "dynamic_field",
+      "field": "certificate_id",
+      "x": 396,
+      "y": 540,
+      "width": 200,
+      "fontSize": 10,
+      "fontFamily": "{bodyFont}",
+      "fill": "{secondaryColor}",
+      "align": "center"
+    },
+    {
+      "id": "qr-code",
+      "type": "qr_code",
+      "field": "certificate_url",
+      "x": 680,
+      "y": 490,
+      "size": 50,
+      "foreground": "{primaryColor}",
+      "background": "#ffffff"
+    }
+  ]
+}
