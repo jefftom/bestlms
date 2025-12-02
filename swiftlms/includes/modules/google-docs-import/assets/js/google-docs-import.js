@@ -951,4 +951,663 @@
         SheetsImport.init();
     });
 
+    /**
+     * File Upload Module
+     */
+    var FileUpload = {
+        wordFileKey: null,
+        excelFileKey: null,
+        excelSheets: [],
+        excelColumnMap: {},
+
+        /**
+         * Initialize
+         */
+        init: function() {
+            this.bindEvents();
+        },
+
+        /**
+         * Bind events
+         */
+        bindEvents: function() {
+            var self = this;
+
+            // File type tabs
+            $('.sfls-file-type-tab').on('click', function() {
+                var type = $(this).data('type');
+                self.switchFileType(type);
+            });
+
+            // Word dropzone
+            this.setupDropzone('#sfls-word-dropzone', '#sfls-word-file', 'word');
+
+            // Excel dropzone
+            this.setupDropzone('#sfls-excel-dropzone', '#sfls-excel-file', 'excel');
+
+            // Word file remove
+            $('#sfls-word-info .sfls-file-remove').on('click', function() {
+                self.removeFile('word');
+            });
+
+            // Excel file remove
+            $('#sfls-excel-info .sfls-file-remove').on('click', function() {
+                self.removeFile('excel');
+            });
+
+            // Word import
+            $('#sfls-word-import-btn').on('click', function() {
+                self.importWord();
+            });
+
+            // Word cancel
+            $('#sfls-word-cancel-btn').on('click', function() {
+                self.cancelWord();
+            });
+
+            // Excel import type change
+            $('#sfls-excel-import-type').on('change', function() {
+                var type = $(this).val();
+                $('#sfls-excel-preview-btn').prop('disabled', !type);
+            });
+
+            // Excel preview
+            $('#sfls-excel-preview-btn').on('click', function() {
+                self.previewExcel();
+            });
+
+            // Excel import
+            $('#sfls-excel-import-btn').on('click', function() {
+                self.importExcel();
+            });
+
+            // Excel cancel
+            $('#sfls-excel-cancel-btn').on('click', function() {
+                self.cancelExcel();
+            });
+
+            // Split by change for Word
+            $('#word_split_by').on('change', function() {
+                if (self.wordFileKey) {
+                    self.previewWord();
+                }
+            });
+        },
+
+        /**
+         * Switch file type tab
+         */
+        switchFileType: function(type) {
+            $('.sfls-file-type-tab').removeClass('active');
+            $('.sfls-file-type-tab[data-type="' + type + '"]').addClass('active');
+            $('.sfls-upload-type-content').removeClass('active');
+            $('#sfls-upload-' + type).addClass('active');
+        },
+
+        /**
+         * Setup dropzone
+         */
+        setupDropzone: function(dropzoneSelector, inputSelector, type) {
+            var self = this;
+            var $dropzone = $(dropzoneSelector);
+            var $input = $(inputSelector);
+
+            // Click to open file dialog
+            $dropzone.on('click', function() {
+                $input.click();
+            });
+
+            // Drag events
+            $dropzone.on('dragover', function(e) {
+                e.preventDefault();
+                $(this).addClass('dragover');
+            });
+
+            $dropzone.on('dragleave', function(e) {
+                e.preventDefault();
+                $(this).removeClass('dragover');
+            });
+
+            $dropzone.on('drop', function(e) {
+                e.preventDefault();
+                $(this).removeClass('dragover');
+                var files = e.originalEvent.dataTransfer.files;
+                if (files.length > 0) {
+                    self.uploadFile(files[0], type);
+                }
+            });
+
+            // File input change
+            $input.on('change', function() {
+                if (this.files.length > 0) {
+                    self.uploadFile(this.files[0], type);
+                    this.value = '';
+                }
+            });
+        },
+
+        /**
+         * Upload file
+         */
+        uploadFile: function(file, type) {
+            var self = this;
+            var $dropzone = $('#sfls-' + type + '-dropzone');
+            var $content = $dropzone.find('.sfls-dropzone-content');
+            var $loading = $dropzone.find('.sfls-dropzone-loading');
+
+            // Show loading
+            $content.hide();
+            $loading.show();
+
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('file_type', type);
+            formData.append('action', 'sfls_file_upload');
+            formData.append('nonce', swiftlms_gdocs.nonce);
+
+            $.ajax({
+                url: swiftlms_gdocs.ajax_url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $content.show();
+                    $loading.hide();
+
+                    if (response.success) {
+                        if (type === 'word') {
+                            self.wordFileKey = response.data.file_key;
+                            self.onWordFileLoaded(response.data);
+                        } else {
+                            self.excelFileKey = response.data.file_key;
+                            self.onExcelFileLoaded(response.data);
+                        }
+                    } else {
+                        alert(response.data.message || swiftlms_gdocs.i18n.error);
+                    }
+                },
+                error: function() {
+                    $content.show();
+                    $loading.hide();
+                    alert(swiftlms_gdocs.i18n.error);
+                }
+            });
+        },
+
+        /**
+         * Word file loaded
+         */
+        onWordFileLoaded: function(data) {
+            // Show file info
+            $('#sfls-word-info .sfls-file-name').text(data.file_name);
+            $('#sfls-word-dropzone').hide();
+            $('#sfls-word-info').show();
+
+            // Auto preview
+            this.previewWord();
+        },
+
+        /**
+         * Preview Word file
+         */
+        previewWord: function() {
+            var self = this;
+            var $preview = $('#sfls-word-preview');
+            var $content = $('#sfls-word-preview-content');
+
+            $preview.show();
+            $content.html('<div class="sfls-loading"><div class="sfls-loading-spinner"></div><p>' + swiftlms_gdocs.i18n.loading + '</p></div>');
+
+            this.ajax({
+                action: 'sfls_file_preview',
+                file_key: this.wordFileKey,
+                split_by: $('#word_split_by').val()
+            }).then(function(response) {
+                self.renderWordPreview(response);
+            }).catch(function(error) {
+                $content.html('<div class="sfls-import-error"><span class="dashicons dashicons-warning"></span><p>' + error + '</p></div>');
+            });
+        },
+
+        /**
+         * Render Word preview
+         */
+        renderWordPreview: function(data) {
+            var html = '';
+
+            // Header
+            html += '<div class="sfls-preview-header">';
+            html += '<div class="sfls-preview-title">';
+            html += '<h4>' + data.title + '</h4>';
+            if (data.preview.course.description) {
+                html += '<p>' + data.preview.course.description + '</p>';
+            }
+            html += '</div>';
+            html += '<div class="sfls-preview-stats">';
+            html += '<div class="sfls-preview-stat"><span class="sfls-preview-stat-value">' + data.preview.totals.lessons + '</span><span class="sfls-preview-stat-label">Lessons</span></div>';
+            html += '<div class="sfls-preview-stat"><span class="sfls-preview-stat-value">' + data.preview.totals.quizzes + '</span><span class="sfls-preview-stat-label">Quizzes</span></div>';
+            html += '<div class="sfls-preview-stat"><span class="sfls-preview-stat-value">' + data.stats.word_count.toLocaleString() + '</span><span class="sfls-preview-stat-label">Words</span></div>';
+            html += '</div>';
+            html += '</div>';
+
+            // Lessons preview
+            if (data.preview.lessons && data.preview.lessons.length > 0) {
+                html += '<div class="sfls-lessons-preview">';
+                html += '<h4>Lessons to Create</h4>';
+                html += '<table class="widefat striped">';
+                html += '<thead><tr><th>#</th><th>Title</th><th>Words</th><th>Media</th></tr></thead>';
+                html += '<tbody>';
+
+                data.preview.lessons.forEach(function(lesson, index) {
+                    var media = [];
+                    if (lesson.has_images) media.push('Images');
+                    if (lesson.has_video) media.push('Video');
+
+                    html += '<tr>';
+                    html += '<td>' + (index + 1) + '</td>';
+                    html += '<td>' + lesson.title + '</td>';
+                    html += '<td>' + lesson.word_count + '</td>';
+                    html += '<td>' + (media.length > 0 ? media.join(', ') : '-') + '</td>';
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                html += '</div>';
+            }
+
+            $('#sfls-word-preview-content').html(html);
+        },
+
+        /**
+         * Import Word file
+         */
+        importWord: function() {
+            var self = this;
+
+            if (!this.wordFileKey) {
+                alert('Please upload a file first');
+                return;
+            }
+
+            if (!confirm(swiftlms_gdocs.i18n.confirm_import)) {
+                return;
+            }
+
+            $('#sfls-word-preview').hide();
+            $('#sfls-word-progress').show();
+
+            this.ajax({
+                action: 'sfls_file_import',
+                file_key: this.wordFileKey,
+                split_by: $('#word_split_by').val(),
+                course_status: $('#word_course_status').val(),
+                import_images: $('#word_import_images').is(':checked') ? 1 : 0,
+                create_quizzes: $('#word_create_quizzes').is(':checked') ? 1 : 0
+            }).then(function(response) {
+                $('#sfls-word-progress').hide();
+                self.renderWordResult(response, false);
+            }).catch(function(error) {
+                $('#sfls-word-progress').hide();
+                self.renderWordResult({ message: error }, true);
+            });
+        },
+
+        /**
+         * Render Word import result
+         */
+        renderWordResult: function(response, isError) {
+            var $result = $('#sfls-word-result');
+            var html = '';
+
+            if (!isError) {
+                html += '<div class="sfls-import-success">';
+                html += '<span class="dashicons dashicons-yes-alt"></span>';
+                html += '<h3>' + swiftlms_gdocs.i18n.success + '</h3>';
+
+                if (response.result) {
+                    html += '<div class="sfls-import-stats">';
+                    html += '<div class="sfls-import-stat"><span class="sfls-import-stat-value">' + response.result.lessons + '</span><span class="sfls-import-stat-label">Lessons</span></div>';
+                    html += '<div class="sfls-import-stat"><span class="sfls-import-stat-value">' + response.result.quizzes + '</span><span class="sfls-import-stat-label">Quizzes</span></div>';
+                    html += '</div>';
+                }
+
+                html += '<div class="sfls-import-actions-result">';
+                html += '<a href="' + response.course_url + '" class="button button-primary">Edit Course</a>';
+                html += '<button type="button" class="button" onclick="location.reload()">Import Another</button>';
+                html += '</div>';
+                html += '</div>';
+            } else {
+                html += '<div class="sfls-import-error">';
+                html += '<span class="dashicons dashicons-dismiss"></span>';
+                html += '<h3>Import Failed</h3>';
+                html += '<p>' + response.message + '</p>';
+                html += '<button type="button" class="button" onclick="location.reload()">Try Again</button>';
+                html += '</div>';
+            }
+
+            $result.html(html).show();
+        },
+
+        /**
+         * Cancel Word import
+         */
+        cancelWord: function() {
+            this.removeFile('word');
+        },
+
+        /**
+         * Excel file loaded
+         */
+        onExcelFileLoaded: function(data) {
+            // Show file info
+            $('#sfls-excel-info .sfls-file-name').text(data.file_name);
+            $('#sfls-excel-dropzone').hide();
+            $('#sfls-excel-info').show();
+            $('#sfls-excel-config').show();
+
+            // Hide sheet select for CSV
+            if (data.extension === 'csv') {
+                $('#sfls-excel-sheet-field').hide();
+            }
+        },
+
+        /**
+         * Preview Excel file
+         */
+        previewExcel: function() {
+            var self = this;
+            var importType = $('#sfls-excel-import-type').val();
+
+            if (!importType) {
+                alert('Please select an import type');
+                return;
+            }
+
+            var $btn = $('#sfls-excel-preview-btn');
+            $btn.prop('disabled', true).text(swiftlms_gdocs.i18n.loading);
+
+            this.ajax({
+                action: 'sfls_file_preview',
+                file_key: this.excelFileKey,
+                import_type: importType,
+                sheet_index: $('#sfls-excel-sheet').val() || 0
+            }).then(function(response) {
+                self.excelColumnMap = response.column_map;
+                self.renderExcelMapping(response);
+                self.renderExcelPreview(response);
+                $btn.prop('disabled', false).text('Preview Data');
+            }).catch(function(error) {
+                alert(error);
+                $btn.prop('disabled', false).text('Preview Data');
+            });
+        },
+
+        /**
+         * Render Excel column mapping
+         */
+        renderExcelMapping: function(data) {
+            var self = this;
+            var $fields = $('#sfls-excel-mapping-fields');
+            $fields.empty();
+
+            var requiredFields = data.type_config.required || [];
+            var optionalFields = data.type_config.optional || [];
+            var allFields = requiredFields.concat(optionalFields);
+
+            allFields.forEach(function(field) {
+                var isRequired = requiredFields.indexOf(field) !== -1;
+                var mappedColumn = data.column_map[field] || '';
+                var isMapped = mappedColumn !== '';
+
+                var html = '<div class="sfls-mapping-field ' + (isMapped ? 'mapped' : (isRequired ? 'missing' : '')) + '">';
+                html += '<label>' + self.formatFieldName(field);
+                if (isRequired) {
+                    html += ' <span class="required">*</span>';
+                }
+                html += '</label>';
+                html += '<select data-field="' + field + '">';
+                html += '<option value="">— Not mapped —</option>';
+
+                data.headers.forEach(function(header) {
+                    var selected = mappedColumn === header ? ' selected' : '';
+                    html += '<option value="' + header + '"' + selected + '>' + header + '</option>';
+                });
+
+                html += '</select>';
+                html += '</div>';
+
+                $fields.append(html);
+            });
+
+            $fields.find('select').on('change', function() {
+                var field = $(this).data('field');
+                var value = $(this).val();
+                self.excelColumnMap[field] = value;
+            });
+
+            $('#sfls-excel-mapping').show();
+        },
+
+        /**
+         * Format field name
+         */
+        formatFieldName: function(field) {
+            return field.split('_').map(function(word) {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        },
+
+        /**
+         * Render Excel preview
+         */
+        renderExcelPreview: function(data) {
+            var self = this;
+            var validation = data.validation;
+            var $summary = $('#sfls-excel-preview .sfls-validation-summary');
+
+            // Validation summary
+            var validCount = validation.valid_rows.length;
+            var errorCount = validation.errors.length;
+
+            if (errorCount === 0) {
+                $summary.removeClass('has-errors').addClass('valid');
+                $summary.html('<span class="dashicons dashicons-yes-alt sfls-summary-icon"></span> All ' + validCount + ' rows are valid and ready to import.');
+            } else {
+                $summary.removeClass('valid').addClass('has-errors');
+                var summaryHtml = '<span class="dashicons dashicons-warning sfls-summary-icon"></span> ';
+                summaryHtml += validCount + ' valid rows, ' + errorCount + ' rows with errors.';
+                $summary.html(summaryHtml);
+            }
+
+            // Preview table
+            var $table = $('#sfls-excel-preview-table');
+            var tableHtml = '<thead><tr><th>Status</th>';
+
+            Object.keys(this.excelColumnMap).forEach(function(field) {
+                if (self.excelColumnMap[field]) {
+                    tableHtml += '<th>' + self.formatFieldName(field) + '</th>';
+                }
+            });
+            tableHtml += '</tr></thead><tbody>';
+
+            data.sample_rows.forEach(function(row, index) {
+                var isValid = !validation.errors.find(function(e) { return e.row === (index + 2); });
+                tableHtml += '<tr class="' + (isValid ? 'valid' : 'invalid') + '">';
+                tableHtml += '<td><span class="sfls-row-status ' + (isValid ? 'valid' : 'invalid') + '">' + (isValid ? 'Valid' : 'Error') + '</span></td>';
+
+                Object.keys(self.excelColumnMap).forEach(function(field) {
+                    if (self.excelColumnMap[field]) {
+                        tableHtml += '<td>' + (row[field] || '-') + '</td>';
+                    }
+                });
+
+                tableHtml += '</tr>';
+            });
+
+            tableHtml += '</tbody>';
+            $table.html(tableHtml);
+
+            // Import options
+            this.renderExcelOptions();
+
+            $('#sfls-excel-preview').show();
+        },
+
+        /**
+         * Render Excel import options
+         */
+        renderExcelOptions: function() {
+            var type = $('#sfls-excel-import-type').val();
+            var $options = $('#sfls-excel-options');
+            $options.empty();
+
+            var optionsHtml = '';
+
+            if (type === 'students') {
+                optionsHtml += '<div class="sfls-option-field sfls-checkbox-field"><label><input type="checkbox" id="excel-opt-send-welcome" checked> Send welcome email</label></div>';
+            } else if (type === 'enrollments') {
+                optionsHtml += '<div class="sfls-option-field sfls-checkbox-field"><label><input type="checkbox" id="excel-opt-send-notification" checked> Send enrollment notification</label></div>';
+            }
+
+            optionsHtml += '<div class="sfls-option-field sfls-checkbox-field"><label><input type="checkbox" id="excel-opt-skip-existing" checked> Skip existing records</label></div>';
+
+            $options.html(optionsHtml);
+        },
+
+        /**
+         * Import Excel file
+         */
+        importExcel: function() {
+            var self = this;
+            var importType = $('#sfls-excel-import-type').val();
+
+            if (!confirm('Are you sure you want to import this data?')) {
+                return;
+            }
+
+            var options = {
+                skip_existing: $('#excel-opt-skip-existing').is(':checked'),
+                send_welcome: $('#excel-opt-send-welcome').is(':checked'),
+                send_notification: $('#excel-opt-send-notification').is(':checked')
+            };
+
+            $('#sfls-excel-preview').hide();
+            $('#sfls-excel-progress').show();
+
+            this.ajax({
+                action: 'sfls_file_import',
+                file_key: this.excelFileKey,
+                import_type: importType,
+                sheet_index: $('#sfls-excel-sheet').val() || 0,
+                column_map: JSON.stringify(this.excelColumnMap),
+                options: JSON.stringify(options)
+            }).then(function(response) {
+                $('#sfls-excel-progress').hide();
+                self.renderExcelResult(response, false);
+            }).catch(function(error) {
+                $('#sfls-excel-progress').hide();
+                self.renderExcelResult({ message: error }, true);
+            });
+        },
+
+        /**
+         * Render Excel import result
+         */
+        renderExcelResult: function(response, isError) {
+            var $result = $('#sfls-excel-result');
+            var html = '';
+
+            if (!isError) {
+                html += '<div class="sfls-import-success">';
+                html += '<span class="dashicons dashicons-yes-alt"></span>';
+                html += '<h3>Import Complete!</h3>';
+                html += '<p>' + response.message + '</p>';
+
+                if (response.stats) {
+                    html += '<div class="sfls-sheets-result-stats">';
+                    html += '<div class="sfls-result-stat"><span class="sfls-result-stat-value created">' + response.stats.created + '</span><span class="sfls-result-stat-label">Created</span></div>';
+                    html += '<div class="sfls-result-stat"><span class="sfls-result-stat-value updated">' + response.stats.updated + '</span><span class="sfls-result-stat-label">Updated</span></div>';
+                    html += '<div class="sfls-result-stat"><span class="sfls-result-stat-value skipped">' + response.stats.skipped + '</span><span class="sfls-result-stat-label">Skipped</span></div>';
+                    html += '<div class="sfls-result-stat"><span class="sfls-result-stat-value errors">' + response.stats.errors + '</span><span class="sfls-result-stat-label">Errors</span></div>';
+                    html += '</div>';
+                }
+
+                html += '<div class="sfls-import-actions-result">';
+                html += '<button type="button" class="button button-primary" onclick="location.reload()">Import More</button>';
+                html += '</div>';
+                html += '</div>';
+            } else {
+                html += '<div class="sfls-import-error">';
+                html += '<span class="dashicons dashicons-dismiss"></span>';
+                html += '<h3>Import Failed</h3>';
+                html += '<p>' + response.message + '</p>';
+                html += '<button type="button" class="button" onclick="location.reload()">Try Again</button>';
+                html += '</div>';
+            }
+
+            $result.html(html).show();
+        },
+
+        /**
+         * Cancel Excel import
+         */
+        cancelExcel: function() {
+            $('#sfls-excel-mapping').hide();
+            $('#sfls-excel-preview').hide();
+        },
+
+        /**
+         * Remove file
+         */
+        removeFile: function(type) {
+            if (type === 'word') {
+                this.wordFileKey = null;
+                $('#sfls-word-info').hide();
+                $('#sfls-word-preview').hide();
+                $('#sfls-word-result').hide();
+                $('#sfls-word-dropzone').show();
+            } else {
+                this.excelFileKey = null;
+                this.excelColumnMap = {};
+                $('#sfls-excel-info').hide();
+                $('#sfls-excel-config').hide();
+                $('#sfls-excel-mapping').hide();
+                $('#sfls-excel-preview').hide();
+                $('#sfls-excel-result').hide();
+                $('#sfls-excel-dropzone').show();
+            }
+        },
+
+        /**
+         * AJAX helper
+         */
+        ajax: function(data) {
+            data.nonce = swiftlms_gdocs.nonce;
+
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: swiftlms_gdocs.ajax_url,
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        if (response.success) {
+                            resolve(response.data);
+                        } else {
+                            reject(response.data.message || swiftlms_gdocs.i18n.error);
+                        }
+                    },
+                    error: function() {
+                        reject(swiftlms_gdocs.i18n.error);
+                    }
+                });
+            });
+        }
+    };
+
+    // Initialize File Upload on ready
+    $(document).ready(function() {
+        FileUpload.init();
+    });
+
 })(jQuery);

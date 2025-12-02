@@ -70,6 +70,11 @@ class Google_Docs_Import_Module extends AbstractModule {
         add_action( 'wp_ajax_sfls_preset_delete', array( $this, 'ajax_delete_preset' ) );
         add_action( 'wp_ajax_sfls_preset_load', array( $this, 'ajax_load_preset' ) );
 
+        // AJAX handlers - File Upload.
+        add_action( 'wp_ajax_sfls_file_upload', array( $this, 'ajax_file_upload' ) );
+        add_action( 'wp_ajax_sfls_file_preview', array( $this, 'ajax_file_preview' ) );
+        add_action( 'wp_ajax_sfls_file_import', array( $this, 'ajax_file_import' ) );
+
         // Add import button to course list.
         add_action( 'admin_footer-edit.php', array( $this, 'add_import_button' ) );
     }
@@ -304,6 +309,10 @@ class Google_Docs_Import_Module extends AbstractModule {
                 <span class="dashicons dashicons-editor-table"></span>
                 <?php esc_html_e( 'Google Sheets', 'swiftlms' ); ?>
             </button>
+            <button type="button" class="sfls-primary-tab" data-mode="upload">
+                <span class="dashicons dashicons-upload"></span>
+                <?php esc_html_e( 'File Upload', 'swiftlms' ); ?>
+            </button>
         </div>
 
         <!-- Google Docs Import Section -->
@@ -463,6 +472,263 @@ class Google_Docs_Import_Module extends AbstractModule {
         <!-- Google Sheets Import Section -->
         <div id="sfls-mode-sheets" class="sfls-mode-content">
             <?php $this->render_sheets_import_section(); ?>
+        </div>
+
+        <!-- File Upload Section -->
+        <div id="sfls-mode-upload" class="sfls-mode-content">
+            <?php $this->render_file_upload_section(); ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render file upload section.
+     */
+    private function render_file_upload_section(): void {
+        $import_types = Sheets_Parser::get_all_import_types();
+        ?>
+        <div class="sfls-gdocs-card sfls-file-upload">
+            <div class="sfls-gdocs-card-header">
+                <h2><?php esc_html_e( 'Upload Word or Excel Files', 'swiftlms' ); ?></h2>
+            </div>
+            <div class="sfls-gdocs-card-body">
+                <!-- File Type Selection -->
+                <div class="sfls-file-type-tabs">
+                    <button type="button" class="sfls-file-type-tab active" data-type="word">
+                        <span class="dashicons dashicons-media-document"></span>
+                        <?php esc_html_e( 'Word Document (.docx)', 'swiftlms' ); ?>
+                    </button>
+                    <button type="button" class="sfls-file-type-tab" data-type="excel">
+                        <span class="dashicons dashicons-media-spreadsheet"></span>
+                        <?php esc_html_e( 'Excel/CSV (.xlsx, .csv)', 'swiftlms' ); ?>
+                    </button>
+                </div>
+
+                <!-- Word Upload Section -->
+                <div id="sfls-upload-word" class="sfls-upload-type-content active">
+                    <div class="sfls-dropzone" id="sfls-word-dropzone">
+                        <div class="sfls-dropzone-content">
+                            <span class="dashicons dashicons-upload"></span>
+                            <p><?php esc_html_e( 'Drag & drop your Word document here', 'swiftlms' ); ?></p>
+                            <p class="sfls-dropzone-hint"><?php esc_html_e( 'or click to browse', 'swiftlms' ); ?></p>
+                            <input type="file" id="sfls-word-file" accept=".docx,.doc" style="display: none;">
+                        </div>
+                        <div class="sfls-dropzone-loading" style="display: none;">
+                            <div class="sfls-loading-spinner"></div>
+                            <p><?php esc_html_e( 'Processing document...', 'swiftlms' ); ?></p>
+                        </div>
+                    </div>
+
+                    <div class="sfls-file-info" id="sfls-word-info" style="display: none;">
+                        <div class="sfls-file-info-header">
+                            <span class="dashicons dashicons-media-document"></span>
+                            <span class="sfls-file-name"></span>
+                            <button type="button" class="sfls-file-remove" title="<?php esc_attr_e( 'Remove', 'swiftlms' ); ?>">
+                                <span class="dashicons dashicons-no-alt"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Word Preview Section -->
+                    <div id="sfls-word-preview" class="sfls-word-preview" style="display: none;">
+                        <h4><?php esc_html_e( 'Document Preview', 'swiftlms' ); ?></h4>
+                        <div id="sfls-word-preview-content"></div>
+
+                        <!-- Import Options -->
+                        <div class="sfls-import-options">
+                            <h4><?php esc_html_e( 'Import Options', 'swiftlms' ); ?></h4>
+
+                            <div class="sfls-options-grid">
+                                <div class="sfls-option-field">
+                                    <label for="word_split_by"><?php esc_html_e( 'Split Lessons By', 'swiftlms' ); ?></label>
+                                    <select id="word_split_by" name="word_split_by">
+                                        <option value="heading_1"><?php esc_html_e( 'Heading 1 (H1)', 'swiftlms' ); ?></option>
+                                        <option value="heading_2"><?php esc_html_e( 'Heading 2 (H2)', 'swiftlms' ); ?></option>
+                                        <option value="heading_3"><?php esc_html_e( 'Heading 3 (H3)', 'swiftlms' ); ?></option>
+                                    </select>
+                                </div>
+
+                                <div class="sfls-option-field">
+                                    <label for="word_course_status"><?php esc_html_e( 'Course Status', 'swiftlms' ); ?></label>
+                                    <select id="word_course_status" name="word_course_status">
+                                        <option value="draft"><?php esc_html_e( 'Draft', 'swiftlms' ); ?></option>
+                                        <option value="publish"><?php esc_html_e( 'Published', 'swiftlms' ); ?></option>
+                                    </select>
+                                </div>
+
+                                <div class="sfls-option-field sfls-checkbox-field">
+                                    <label>
+                                        <input type="checkbox" id="word_import_images" name="word_import_images" checked>
+                                        <?php esc_html_e( 'Import images to Media Library', 'swiftlms' ); ?>
+                                    </label>
+                                </div>
+
+                                <div class="sfls-option-field sfls-checkbox-field">
+                                    <label>
+                                        <input type="checkbox" id="word_create_quizzes" name="word_create_quizzes" checked>
+                                        <?php esc_html_e( 'Create quizzes from [QUIZ] markers', 'swiftlms' ); ?>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sfls-import-actions">
+                            <button type="button" id="sfls-word-import-btn" class="button button-primary button-hero">
+                                <?php esc_html_e( 'Import as Course', 'swiftlms' ); ?>
+                            </button>
+                            <button type="button" id="sfls-word-cancel-btn" class="button">
+                                <?php esc_html_e( 'Cancel', 'swiftlms' ); ?>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Import Progress -->
+                    <div id="sfls-word-progress" class="sfls-import-progress" style="display: none;">
+                        <div class="sfls-progress-spinner"></div>
+                        <p class="sfls-progress-text"><?php esc_html_e( 'Importing document...', 'swiftlms' ); ?></p>
+                    </div>
+
+                    <!-- Import Result -->
+                    <div id="sfls-word-result" class="sfls-import-result" style="display: none;"></div>
+                </div>
+
+                <!-- Excel Upload Section -->
+                <div id="sfls-upload-excel" class="sfls-upload-type-content">
+                    <div class="sfls-dropzone" id="sfls-excel-dropzone">
+                        <div class="sfls-dropzone-content">
+                            <span class="dashicons dashicons-upload"></span>
+                            <p><?php esc_html_e( 'Drag & drop your Excel or CSV file here', 'swiftlms' ); ?></p>
+                            <p class="sfls-dropzone-hint"><?php esc_html_e( 'or click to browse', 'swiftlms' ); ?></p>
+                            <input type="file" id="sfls-excel-file" accept=".xlsx,.xls,.csv" style="display: none;">
+                        </div>
+                        <div class="sfls-dropzone-loading" style="display: none;">
+                            <div class="sfls-loading-spinner"></div>
+                            <p><?php esc_html_e( 'Processing spreadsheet...', 'swiftlms' ); ?></p>
+                        </div>
+                    </div>
+
+                    <div class="sfls-file-info" id="sfls-excel-info" style="display: none;">
+                        <div class="sfls-file-info-header">
+                            <span class="dashicons dashicons-media-spreadsheet"></span>
+                            <span class="sfls-file-name"></span>
+                            <button type="button" class="sfls-file-remove" title="<?php esc_attr_e( 'Remove', 'swiftlms' ); ?>">
+                                <span class="dashicons dashicons-no-alt"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Excel Config -->
+                    <div id="sfls-excel-config" class="sfls-excel-config" style="display: none;">
+                        <div class="sfls-options-grid">
+                            <div class="sfls-option-field" id="sfls-excel-sheet-field" style="display: none;">
+                                <label for="sfls-excel-sheet"><?php esc_html_e( 'Select Sheet', 'swiftlms' ); ?></label>
+                                <select id="sfls-excel-sheet"></select>
+                            </div>
+
+                            <div class="sfls-option-field">
+                                <label for="sfls-excel-import-type"><?php esc_html_e( 'Import Type', 'swiftlms' ); ?></label>
+                                <select id="sfls-excel-import-type">
+                                    <option value=""><?php esc_html_e( '— Select import type —', 'swiftlms' ); ?></option>
+                                    <?php foreach ( $import_types as $type => $config ) : ?>
+                                        <option value="<?php echo esc_attr( $type ); ?>">
+                                            <?php echo esc_html( $config['label'] ); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="sfls-sheets-actions">
+                            <button type="button" id="sfls-excel-preview-btn" class="button" disabled>
+                                <?php esc_html_e( 'Preview Data', 'swiftlms' ); ?>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Column Mapping -->
+                    <div id="sfls-excel-mapping" class="sfls-column-mapping" style="display: none;">
+                        <h4><?php esc_html_e( 'Column Mapping', 'swiftlms' ); ?></h4>
+                        <p class="sfls-mapping-hint">
+                            <?php esc_html_e( 'Map your spreadsheet columns to the required fields. Required fields are marked with *.', 'swiftlms' ); ?>
+                        </p>
+                        <div id="sfls-excel-mapping-fields" class="sfls-mapping-fields"></div>
+                    </div>
+
+                    <!-- Data Preview -->
+                    <div id="sfls-excel-preview" class="sfls-sheets-preview" style="display: none;">
+                        <h4><?php esc_html_e( 'Data Preview', 'swiftlms' ); ?></h4>
+                        <div class="sfls-validation-summary"></div>
+                        <div class="sfls-preview-table-wrap">
+                            <table id="sfls-excel-preview-table" class="widefat striped"></table>
+                        </div>
+
+                        <div class="sfls-import-options">
+                            <h4><?php esc_html_e( 'Import Options', 'swiftlms' ); ?></h4>
+                            <div class="sfls-options-grid" id="sfls-excel-options"></div>
+                        </div>
+
+                        <div class="sfls-import-actions">
+                            <button type="button" id="sfls-excel-import-btn" class="button button-primary button-hero">
+                                <?php esc_html_e( 'Import Data', 'swiftlms' ); ?>
+                            </button>
+                            <button type="button" id="sfls-excel-cancel-btn" class="button">
+                                <?php esc_html_e( 'Cancel', 'swiftlms' ); ?>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Import Progress -->
+                    <div id="sfls-excel-progress" class="sfls-import-progress" style="display: none;">
+                        <div class="sfls-progress-spinner"></div>
+                        <p class="sfls-progress-text"><?php esc_html_e( 'Importing data...', 'swiftlms' ); ?></p>
+                    </div>
+
+                    <!-- Import Result -->
+                    <div id="sfls-excel-result" class="sfls-import-result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Upload Help -->
+        <div class="sfls-gdocs-card sfls-gdocs-help">
+            <div class="sfls-gdocs-card-header">
+                <h2><?php esc_html_e( 'File Upload Guide', 'swiftlms' ); ?></h2>
+            </div>
+            <div class="sfls-gdocs-card-body">
+                <div class="sfls-help-columns">
+                    <div class="sfls-help-column">
+                        <h4><?php esc_html_e( 'Word Documents', 'swiftlms' ); ?></h4>
+                        <ul>
+                            <li><?php esc_html_e( 'Supports .docx format', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Headings become lessons', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Images are imported', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Formatting preserved', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Tables supported', 'swiftlms' ); ?></li>
+                        </ul>
+                    </div>
+
+                    <div class="sfls-help-column">
+                        <h4><?php esc_html_e( 'Excel/CSV Files', 'swiftlms' ); ?></h4>
+                        <ul>
+                            <li><?php esc_html_e( 'Supports .xlsx and .csv', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Bulk import students', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Import enrollments', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Create courses in bulk', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Import quiz questions', 'swiftlms' ); ?></li>
+                        </ul>
+                    </div>
+
+                    <div class="sfls-help-column">
+                        <h4><?php esc_html_e( 'Tips', 'swiftlms' ); ?></h4>
+                        <ul>
+                            <li><?php esc_html_e( 'Max file size: 50MB', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'First row = headers', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Preview before importing', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Use [QUIZ] markers in Word', 'swiftlms' ); ?></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php
     }
@@ -1047,6 +1313,353 @@ class Google_Docs_Import_Module extends AbstractModule {
         wp_send_json_success( array(
             'preset'  => $preset,
             'options' => Parsing_Options::get_preset_options( $id ),
+        ) );
+    }
+
+    /**
+     * AJAX: Handle file upload.
+     */
+    public function ajax_file_upload(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        if ( empty( $_FILES['file'] ) ) {
+            wp_send_json_error( array( 'message' => __( 'No file uploaded.', 'swiftlms' ) ) );
+        }
+
+        $file = $_FILES['file'];
+        $file_type = isset( $_POST['file_type'] ) ? sanitize_text_field( $_POST['file_type'] ) : '';
+
+        // Validate file.
+        $allowed_types = array(
+            'word'  => array( 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword' ),
+            'excel' => array(
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
+                'text/csv',
+                'text/plain',
+            ),
+        );
+
+        if ( ! isset( $allowed_types[ $file_type ] ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid file type.', 'swiftlms' ) ) );
+        }
+
+        // Check MIME type.
+        $finfo = finfo_open( FILEINFO_MIME_TYPE );
+        $mime = finfo_file( $finfo, $file['tmp_name'] );
+        finfo_close( $finfo );
+
+        // Also check extension as fallback.
+        $ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+        $valid_exts = array(
+            'word'  => array( 'docx', 'doc' ),
+            'excel' => array( 'xlsx', 'xls', 'csv' ),
+        );
+
+        if ( ! in_array( $ext, $valid_exts[ $file_type ], true ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid file extension.', 'swiftlms' ) ) );
+        }
+
+        // Move to temp directory.
+        $upload_dir = wp_upload_dir();
+        $temp_dir = $upload_dir['basedir'] . '/swiftlms-temp';
+        if ( ! file_exists( $temp_dir ) ) {
+            wp_mkdir_p( $temp_dir );
+        }
+
+        $temp_file = $temp_dir . '/' . wp_generate_uuid4() . '.' . $ext;
+        if ( ! move_uploaded_file( $file['tmp_name'], $temp_file ) ) {
+            wp_send_json_error( array( 'message' => __( 'Failed to save uploaded file.', 'swiftlms' ) ) );
+        }
+
+        // Store in transient for later use.
+        $file_key = wp_generate_uuid4();
+        set_transient( 'sfls_upload_' . $file_key, array(
+            'path'      => $temp_file,
+            'name'      => $file['name'],
+            'type'      => $file_type,
+            'extension' => $ext,
+        ), HOUR_IN_SECONDS );
+
+        wp_send_json_success( array(
+            'file_key'  => $file_key,
+            'file_name' => $file['name'],
+            'file_type' => $file_type,
+            'extension' => $ext,
+        ) );
+    }
+
+    /**
+     * AJAX: Preview uploaded file.
+     */
+    public function ajax_file_preview(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        $file_key = isset( $_POST['file_key'] ) ? sanitize_text_field( $_POST['file_key'] ) : '';
+        $file_data = get_transient( 'sfls_upload_' . $file_key );
+
+        if ( ! $file_data || ! file_exists( $file_data['path'] ) ) {
+            wp_send_json_error( array( 'message' => __( 'File not found. Please upload again.', 'swiftlms' ) ) );
+        }
+
+        if ( 'word' === $file_data['type'] ) {
+            $this->preview_word_file( $file_data );
+        } else {
+            $this->preview_excel_file( $file_data, $_POST );
+        }
+    }
+
+    /**
+     * Preview Word file.
+     *
+     * @param array $file_data File data.
+     */
+    private function preview_word_file( array $file_data ): void {
+        $split_by = isset( $_POST['split_by'] ) ? sanitize_text_field( $_POST['split_by'] ) : 'heading_1';
+
+        $parser = new Word_Parser( $file_data['path'] );
+        $parsed = $parser->parse( array(
+            'split_by'       => $split_by,
+            'import_images'  => false,
+            'create_quizzes' => true,
+        ) );
+
+        if ( is_wp_error( $parsed ) ) {
+            wp_send_json_error( array( 'message' => $parsed->get_error_message() ) );
+        }
+
+        // Build preview similar to Google Docs.
+        $preview = array(
+            'course'  => $parsed['course'],
+            'totals'  => array(
+                'lessons' => count( $parsed['lessons'] ),
+                'quizzes' => count( $parsed['quizzes'] ),
+            ),
+            'lessons' => array_map( function( $lesson ) {
+                return array(
+                    'title'      => $lesson['title'],
+                    'type'       => 'lesson',
+                    'word_count' => $lesson['word_count'],
+                    'has_images' => $lesson['has_images'],
+                    'has_video'  => $lesson['has_video'],
+                );
+            }, $parsed['lessons'] ),
+            'quizzes' => array_map( function( $quiz ) {
+                return array(
+                    'title'          => $quiz['title'],
+                    'question_count' => count( $quiz['questions'] ),
+                );
+            }, $parsed['quizzes'] ),
+        );
+
+        wp_send_json_success( array(
+            'title'     => $parsed['course']['title'] ?: $file_data['name'],
+            'preview'   => $preview,
+            'structure' => $parser->get_structure_preview(),
+            'stats'     => array(
+                'word_count'     => $parsed['word_count'],
+                'heading_counts' => $parser->get_heading_counts(),
+            ),
+        ) );
+    }
+
+    /**
+     * Preview Excel file.
+     *
+     * @param array $file_data File data.
+     * @param array $post_data POST data.
+     */
+    private function preview_excel_file( array $file_data, array $post_data ): void {
+        $import_type = isset( $post_data['import_type'] ) ? sanitize_text_field( $post_data['import_type'] ) : '';
+        $sheet_index = isset( $post_data['sheet_index'] ) ? (int) $post_data['sheet_index'] : 0;
+
+        if ( empty( $import_type ) ) {
+            wp_send_json_error( array( 'message' => __( 'Please select an import type.', 'swiftlms' ) ) );
+        }
+
+        // Read file based on extension.
+        if ( 'csv' === $file_data['extension'] ) {
+            $raw_data = Excel_Parser::read_csv( $file_data['path'] );
+        } else {
+            $parser = new Excel_Parser( $file_data['path'] );
+            $result = $parser->open();
+
+            if ( is_wp_error( $result ) ) {
+                wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+            }
+
+            $raw_data = $parser->read_sheet( $sheet_index );
+            $parser->close();
+        }
+
+        if ( is_wp_error( $raw_data ) ) {
+            wp_send_json_error( array( 'message' => $raw_data->get_error_message() ) );
+        }
+
+        $values = $raw_data['values'] ?? array();
+        if ( empty( $values ) ) {
+            wp_send_json_error( array( 'message' => __( 'File is empty.', 'swiftlms' ) ) );
+        }
+
+        $headers = $values[0];
+        $column_map = Excel_Parser::auto_detect_columns( $headers, $import_type );
+        $parsed = Excel_Parser::parse_sheet_data( $raw_data, $column_map );
+        $validation = Excel_Parser::validate_data( $parsed, $import_type );
+
+        wp_send_json_success( array(
+            'headers'     => $headers,
+            'column_map'  => $column_map,
+            'sample_rows' => array_slice( $parsed, 0, 5 ),
+            'validation'  => $validation,
+            'type_config' => Sheets_Parser::get_import_type_config( $import_type ),
+        ) );
+    }
+
+    /**
+     * AJAX: Import uploaded file.
+     */
+    public function ajax_file_import(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        $file_key = isset( $_POST['file_key'] ) ? sanitize_text_field( $_POST['file_key'] ) : '';
+        $file_data = get_transient( 'sfls_upload_' . $file_key );
+
+        if ( ! $file_data || ! file_exists( $file_data['path'] ) ) {
+            wp_send_json_error( array( 'message' => __( 'File not found. Please upload again.', 'swiftlms' ) ) );
+        }
+
+        if ( 'word' === $file_data['type'] ) {
+            $this->import_word_file( $file_data, $file_key );
+        } else {
+            $this->import_excel_file( $file_data, $file_key );
+        }
+    }
+
+    /**
+     * Import Word file.
+     *
+     * @param array  $file_data File data.
+     * @param string $file_key  File key.
+     */
+    private function import_word_file( array $file_data, string $file_key ): void {
+        $options = array(
+            'split_by'        => isset( $_POST['split_by'] ) ? sanitize_text_field( $_POST['split_by'] ) : 'heading_1',
+            'import_images'   => ! empty( $_POST['import_images'] ),
+            'create_quizzes'  => ! empty( $_POST['create_quizzes'] ),
+            'preserve_styles' => true,
+        );
+
+        $parser = new Word_Parser( $file_data['path'] );
+        $parsed = $parser->parse( $options );
+
+        if ( is_wp_error( $parsed ) ) {
+            wp_send_json_error( array( 'message' => $parsed->get_error_message() ) );
+        }
+
+        // Import using Course_Importer.
+        $importer = new Course_Importer( $parsed, array(
+            'course_status'  => isset( $_POST['course_status'] ) ? sanitize_text_field( $_POST['course_status'] ) : 'draft',
+            'import_quizzes' => $options['create_quizzes'],
+        ) );
+
+        $result = $importer->import();
+
+        // Cleanup temp file.
+        @unlink( $file_data['path'] );
+        delete_transient( 'sfls_upload_' . $file_key );
+
+        if ( ! $result['success'] ) {
+            wp_send_json_error( array(
+                'message' => __( 'Import completed with errors.', 'swiftlms' ),
+                'errors'  => $result['errors'],
+                'result'  => $result,
+            ) );
+        }
+
+        wp_send_json_success( array(
+            'message'    => __( 'Course imported successfully!', 'swiftlms' ),
+            'course_id'  => $result['course_id'],
+            'course_url' => get_edit_post_link( $result['course_id'], 'raw' ),
+            'result'     => $result,
+        ) );
+    }
+
+    /**
+     * Import Excel file.
+     *
+     * @param array  $file_data File data.
+     * @param string $file_key  File key.
+     */
+    private function import_excel_file( array $file_data, string $file_key ): void {
+        $import_type = isset( $_POST['import_type'] ) ? sanitize_text_field( $_POST['import_type'] ) : '';
+        $sheet_index = isset( $_POST['sheet_index'] ) ? (int) $_POST['sheet_index'] : 0;
+        $column_map = isset( $_POST['column_map'] ) ? json_decode( stripslashes( $_POST['column_map'] ), true ) : array();
+        $options = isset( $_POST['options'] ) ? json_decode( stripslashes( $_POST['options'] ), true ) : array();
+
+        if ( empty( $import_type ) ) {
+            wp_send_json_error( array( 'message' => __( 'Import type is required.', 'swiftlms' ) ) );
+        }
+
+        // Read file.
+        if ( 'csv' === $file_data['extension'] ) {
+            $raw_data = Excel_Parser::read_csv( $file_data['path'] );
+        } else {
+            $parser = new Excel_Parser( $file_data['path'] );
+            $result = $parser->open();
+
+            if ( is_wp_error( $result ) ) {
+                wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+            }
+
+            $raw_data = $parser->read_sheet( $sheet_index );
+            $parser->close();
+        }
+
+        if ( is_wp_error( $raw_data ) ) {
+            wp_send_json_error( array( 'message' => $raw_data->get_error_message() ) );
+        }
+
+        // Parse and validate.
+        $parsed = Excel_Parser::parse_sheet_data( $raw_data, $column_map );
+        $validation = Excel_Parser::validate_data( $parsed, $import_type );
+
+        if ( empty( $validation['valid_rows'] ) ) {
+            wp_send_json_error( array(
+                'message' => __( 'No valid data to import.', 'swiftlms' ),
+                'errors'  => $validation['errors'],
+            ) );
+        }
+
+        // Import.
+        $importer = new Sheets_Importer( $validation['valid_rows'], $import_type, $options );
+        $result = $importer->import();
+
+        // Cleanup temp file.
+        @unlink( $file_data['path'] );
+        delete_transient( 'sfls_upload_' . $file_key );
+
+        wp_send_json_success( array(
+            'message' => sprintf(
+                __( 'Import complete: %d created, %d updated, %d skipped, %d errors.', 'swiftlms' ),
+                $result['stats']['created'],
+                $result['stats']['updated'],
+                $result['stats']['skipped'],
+                $result['stats']['errors']
+            ),
+            'stats' => $result['stats'],
+            'log'   => $result['log'],
         ) );
     }
 }
