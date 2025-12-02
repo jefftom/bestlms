@@ -52,12 +52,23 @@ class Google_Docs_Import_Module extends AbstractModule {
         // Enqueue assets.
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 
-        // AJAX handlers.
+        // AJAX handlers - Google Docs.
         add_action( 'wp_ajax_sfls_gdocs_search', array( $this, 'ajax_search_docs' ) );
         add_action( 'wp_ajax_sfls_gdocs_preview', array( $this, 'ajax_preview_document' ) );
         add_action( 'wp_ajax_sfls_gdocs_import', array( $this, 'ajax_import_document' ) );
         add_action( 'wp_ajax_sfls_gdocs_disconnect', array( $this, 'ajax_disconnect' ) );
         add_action( 'wp_ajax_sfls_gdocs_save_credentials', array( $this, 'ajax_save_credentials' ) );
+
+        // AJAX handlers - Google Sheets.
+        add_action( 'wp_ajax_sfls_sheets_load', array( $this, 'ajax_load_spreadsheet' ) );
+        add_action( 'wp_ajax_sfls_sheets_preview', array( $this, 'ajax_preview_sheet' ) );
+        add_action( 'wp_ajax_sfls_sheets_import', array( $this, 'ajax_import_sheet' ) );
+        add_action( 'wp_ajax_sfls_sheets_template', array( $this, 'ajax_download_template' ) );
+
+        // AJAX handlers - Presets.
+        add_action( 'wp_ajax_sfls_preset_save', array( $this, 'ajax_save_preset' ) );
+        add_action( 'wp_ajax_sfls_preset_delete', array( $this, 'ajax_delete_preset' ) );
+        add_action( 'wp_ajax_sfls_preset_load', array( $this, 'ajax_load_preset' ) );
 
         // Add import button to course list.
         add_action( 'admin_footer-edit.php', array( $this, 'add_import_button' ) );
@@ -281,7 +292,22 @@ class Google_Docs_Import_Module extends AbstractModule {
      * Render import step.
      */
     private function render_import_step(): void {
+        $presets = Parsing_Options::get_all_presets();
         ?>
+        <!-- Primary Import Type Tabs -->
+        <div class="sfls-primary-tabs">
+            <button type="button" class="sfls-primary-tab active" data-mode="docs">
+                <span class="dashicons dashicons-media-document"></span>
+                <?php esc_html_e( 'Google Docs', 'swiftlms' ); ?>
+            </button>
+            <button type="button" class="sfls-primary-tab" data-mode="sheets">
+                <span class="dashicons dashicons-editor-table"></span>
+                <?php esc_html_e( 'Google Sheets', 'swiftlms' ); ?>
+            </button>
+        </div>
+
+        <!-- Google Docs Import Section -->
+        <div id="sfls-mode-docs" class="sfls-mode-content active">
         <div class="sfls-gdocs-card sfls-gdocs-import">
             <div class="sfls-gdocs-card-header">
                 <h2><?php esc_html_e( 'Select a Document to Import', 'swiftlms' ); ?></h2>
@@ -428,6 +454,166 @@ class Google_Docs_Import_Module extends AbstractModule {
 [A*] True
 [A] False</pre>
                         <p class="sfls-hint"><?php esc_html_e( 'Use [A*] to mark correct answers', 'swiftlms' ); ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div><!-- End Google Docs Mode -->
+
+        <!-- Google Sheets Import Section -->
+        <div id="sfls-mode-sheets" class="sfls-mode-content">
+            <?php $this->render_sheets_import_section(); ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render Google Sheets import section.
+     */
+    private function render_sheets_import_section(): void {
+        $import_types = Sheets_Parser::get_all_import_types();
+        ?>
+        <div class="sfls-gdocs-card sfls-sheets-import">
+            <div class="sfls-gdocs-card-header">
+                <h2><?php esc_html_e( 'Bulk Import from Google Sheets', 'swiftlms' ); ?></h2>
+            </div>
+            <div class="sfls-gdocs-card-body">
+                <!-- Spreadsheet URL Input -->
+                <div class="sfls-sheets-url-input">
+                    <label for="sfls-sheets-url"><?php esc_html_e( 'Google Sheets URL', 'swiftlms' ); ?></label>
+                    <div class="sfls-url-input">
+                        <input type="url" id="sfls-sheets-url" placeholder="<?php esc_attr_e( 'Paste Google Sheets URL here...', 'swiftlms' ); ?>">
+                        <button type="button" id="sfls-load-sheets-btn" class="button button-primary">
+                            <?php esc_html_e( 'Load Spreadsheet', 'swiftlms' ); ?>
+                        </button>
+                    </div>
+                    <p class="sfls-url-hint">
+                        <?php esc_html_e( 'Example: https://docs.google.com/spreadsheets/d/abc123/edit', 'swiftlms' ); ?>
+                    </p>
+                </div>
+
+                <!-- Spreadsheet Loaded -->
+                <div id="sfls-sheets-config" class="sfls-sheets-config" style="display: none;">
+                    <div class="sfls-sheets-header">
+                        <h3 id="sfls-sheets-title"></h3>
+                        <button type="button" id="sfls-sheets-change" class="button button-small">
+                            <?php esc_html_e( 'Change', 'swiftlms' ); ?>
+                        </button>
+                    </div>
+
+                    <div class="sfls-options-grid">
+                        <div class="sfls-option-field">
+                            <label for="sfls-sheet-select"><?php esc_html_e( 'Select Sheet', 'swiftlms' ); ?></label>
+                            <select id="sfls-sheet-select"></select>
+                        </div>
+
+                        <div class="sfls-option-field">
+                            <label for="sfls-import-type"><?php esc_html_e( 'Import Type', 'swiftlms' ); ?></label>
+                            <select id="sfls-import-type">
+                                <option value=""><?php esc_html_e( '— Select import type —', 'swiftlms' ); ?></option>
+                                <?php foreach ( $import_types as $type => $config ) : ?>
+                                    <option value="<?php echo esc_attr( $type ); ?>">
+                                        <?php echo esc_html( $config['label'] ); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sfls-sheets-actions">
+                        <button type="button" id="sfls-sheets-preview-btn" class="button" disabled>
+                            <?php esc_html_e( 'Preview Data', 'swiftlms' ); ?>
+                        </button>
+                        <a href="#" id="sfls-download-template" class="button" style="display:none;">
+                            <span class="dashicons dashicons-download"></span>
+                            <?php esc_html_e( 'Download Template', 'swiftlms' ); ?>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column Mapping -->
+                <div id="sfls-column-mapping" class="sfls-column-mapping" style="display: none;">
+                    <h4><?php esc_html_e( 'Column Mapping', 'swiftlms' ); ?></h4>
+                    <p class="sfls-mapping-hint">
+                        <?php esc_html_e( 'Map your spreadsheet columns to the required fields. Required fields are marked with *.', 'swiftlms' ); ?>
+                    </p>
+                    <div id="sfls-mapping-fields" class="sfls-mapping-fields"></div>
+                </div>
+
+                <!-- Data Preview -->
+                <div id="sfls-sheets-preview" class="sfls-sheets-preview" style="display: none;">
+                    <h4><?php esc_html_e( 'Data Preview', 'swiftlms' ); ?></h4>
+                    <div class="sfls-validation-summary"></div>
+                    <div class="sfls-preview-table-wrap">
+                        <table id="sfls-preview-table" class="widefat striped"></table>
+                    </div>
+
+                    <div class="sfls-import-options">
+                        <h4><?php esc_html_e( 'Import Options', 'swiftlms' ); ?></h4>
+                        <div class="sfls-options-grid" id="sfls-sheets-options">
+                            <!-- Options populated by JS based on import type -->
+                        </div>
+                    </div>
+
+                    <div class="sfls-import-actions">
+                        <button type="button" id="sfls-sheets-import-btn" class="button button-primary button-hero">
+                            <?php esc_html_e( 'Import Data', 'swiftlms' ); ?>
+                        </button>
+                        <button type="button" id="sfls-sheets-cancel-btn" class="button">
+                            <?php esc_html_e( 'Cancel', 'swiftlms' ); ?>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Import Progress -->
+                <div id="sfls-sheets-progress" class="sfls-import-progress" style="display: none;">
+                    <div class="sfls-progress-spinner"></div>
+                    <p class="sfls-progress-text"><?php esc_html_e( 'Importing data...', 'swiftlms' ); ?></p>
+                </div>
+
+                <!-- Import Result -->
+                <div id="sfls-sheets-result" class="sfls-import-result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Sheets Help Section -->
+        <div class="sfls-gdocs-card sfls-gdocs-help">
+            <div class="sfls-gdocs-card-header">
+                <h2><?php esc_html_e( 'Bulk Import Guide', 'swiftlms' ); ?></h2>
+            </div>
+            <div class="sfls-gdocs-card-body">
+                <div class="sfls-help-columns">
+                    <div class="sfls-help-column">
+                        <h4><?php esc_html_e( 'Available Import Types', 'swiftlms' ); ?></h4>
+                        <ul>
+                            <li><strong><?php esc_html_e( 'Students', 'swiftlms' ); ?></strong> — <?php esc_html_e( 'Import user accounts', 'swiftlms' ); ?></li>
+                            <li><strong><?php esc_html_e( 'Enrollments', 'swiftlms' ); ?></strong> — <?php esc_html_e( 'Enroll students in courses', 'swiftlms' ); ?></li>
+                            <li><strong><?php esc_html_e( 'Courses', 'swiftlms' ); ?></strong> — <?php esc_html_e( 'Create courses', 'swiftlms' ); ?></li>
+                            <li><strong><?php esc_html_e( 'Lessons', 'swiftlms' ); ?></strong> — <?php esc_html_e( 'Add lessons to courses', 'swiftlms' ); ?></li>
+                            <li><strong><?php esc_html_e( 'Quiz Questions', 'swiftlms' ); ?></strong> — <?php esc_html_e( 'Import quiz questions', 'swiftlms' ); ?></li>
+                            <li><strong><?php esc_html_e( 'Coupons', 'swiftlms' ); ?></strong> — <?php esc_html_e( 'Create discount coupons', 'swiftlms' ); ?></li>
+                        </ul>
+                    </div>
+
+                    <div class="sfls-help-column">
+                        <h4><?php esc_html_e( 'Getting Started', 'swiftlms' ); ?></h4>
+                        <ol>
+                            <li><?php esc_html_e( 'Download a template for your import type', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Fill in your data in Google Sheets', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Paste the spreadsheet URL above', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Map columns and preview data', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Import!', 'swiftlms' ); ?></li>
+                        </ol>
+                    </div>
+
+                    <div class="sfls-help-column">
+                        <h4><?php esc_html_e( 'Tips', 'swiftlms' ); ?></h4>
+                        <ul>
+                            <li><?php esc_html_e( 'First row should contain headers', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Use common header names for auto-mapping', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Check validation before importing', 'swiftlms' ); ?></li>
+                            <li><?php esc_html_e( 'Test with a few rows first', 'swiftlms' ); ?></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -634,10 +820,233 @@ class Google_Docs_Import_Module extends AbstractModule {
         ?>
         <script>
         jQuery(document).ready(function($) {
-            var importBtn = '<a href="<?php echo esc_url( admin_url( 'admin.php?page=sfls-google-docs-import' ) ); ?>" class="page-title-action"><?php esc_html_e( 'Import from Google Docs', 'swiftlms' ); ?></a>';
+            var importBtn = '<a href="<?php echo esc_url( admin_url( 'admin.php?page=sfls-google-docs-import' ) ); ?>" class="page-title-action"><?php esc_html_e( 'Import from Google', 'swiftlms' ); ?></a>';
             $('.page-title-action').after(importBtn);
         });
         </script>
         <?php
+    }
+
+    /**
+     * AJAX: Load spreadsheet.
+     */
+    public function ajax_load_spreadsheet(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        $url = isset( $_POST['url'] ) ? esc_url_raw( $_POST['url'] ) : '';
+        $spreadsheet_id = Sheets_Parser::extract_spreadsheet_id( $url );
+
+        if ( ! $spreadsheet_id ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid spreadsheet URL.', 'swiftlms' ) ) );
+        }
+
+        $metadata = Sheets_Parser::get_sheets_list( $spreadsheet_id );
+
+        if ( is_wp_error( $metadata ) ) {
+            wp_send_json_error( array( 'message' => $metadata->get_error_message() ) );
+        }
+
+        wp_send_json_success( array(
+            'spreadsheet_id' => $spreadsheet_id,
+            'title'          => $metadata['title'],
+            'sheets'         => $metadata['sheets'],
+            'import_types'   => Sheets_Parser::get_all_import_types(),
+        ) );
+    }
+
+    /**
+     * AJAX: Preview sheet data.
+     */
+    public function ajax_preview_sheet(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        $spreadsheet_id = isset( $_POST['spreadsheet_id'] ) ? sanitize_text_field( $_POST['spreadsheet_id'] ) : '';
+        $sheet_name = isset( $_POST['sheet_name'] ) ? sanitize_text_field( $_POST['sheet_name'] ) : '';
+        $import_type = isset( $_POST['import_type'] ) ? sanitize_text_field( $_POST['import_type'] ) : '';
+
+        if ( empty( $spreadsheet_id ) || empty( $import_type ) ) {
+            wp_send_json_error( array( 'message' => __( 'Missing required parameters.', 'swiftlms' ) ) );
+        }
+
+        // Get sheet data.
+        $range = $sheet_name ? $sheet_name . '!A1:Z1000' : 'A1:Z1000';
+        $raw_data = Sheets_Parser::get_spreadsheet_data( $spreadsheet_id, $range );
+
+        if ( is_wp_error( $raw_data ) ) {
+            wp_send_json_error( array( 'message' => $raw_data->get_error_message() ) );
+        }
+
+        $values = $raw_data['values'] ?? array();
+        if ( empty( $values ) ) {
+            wp_send_json_error( array( 'message' => __( 'Sheet is empty.', 'swiftlms' ) ) );
+        }
+
+        $headers = $values[0];
+        $column_map = Sheets_Parser::auto_detect_columns( $headers, $import_type );
+        $parsed = Sheets_Parser::parse_sheet_data( $raw_data, $column_map );
+        $validation = Sheets_Parser::validate_data( $parsed, $import_type );
+
+        wp_send_json_success( array(
+            'headers'     => $headers,
+            'column_map'  => $column_map,
+            'sample_rows' => array_slice( $parsed, 0, 5 ),
+            'validation'  => $validation,
+            'type_config' => Sheets_Parser::get_import_type_config( $import_type ),
+        ) );
+    }
+
+    /**
+     * AJAX: Import sheet data.
+     */
+    public function ajax_import_sheet(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        $spreadsheet_id = isset( $_POST['spreadsheet_id'] ) ? sanitize_text_field( $_POST['spreadsheet_id'] ) : '';
+        $sheet_name = isset( $_POST['sheet_name'] ) ? sanitize_text_field( $_POST['sheet_name'] ) : '';
+        $import_type = isset( $_POST['import_type'] ) ? sanitize_text_field( $_POST['import_type'] ) : '';
+        $column_map = isset( $_POST['column_map'] ) ? json_decode( stripslashes( $_POST['column_map'] ), true ) : array();
+        $options = isset( $_POST['options'] ) ? json_decode( stripslashes( $_POST['options'] ), true ) : array();
+
+        if ( empty( $spreadsheet_id ) || empty( $import_type ) ) {
+            wp_send_json_error( array( 'message' => __( 'Missing required parameters.', 'swiftlms' ) ) );
+        }
+
+        // Get sheet data.
+        $range = $sheet_name ? $sheet_name . '!A1:Z1000' : 'A1:Z1000';
+        $raw_data = Sheets_Parser::get_spreadsheet_data( $spreadsheet_id, $range );
+
+        if ( is_wp_error( $raw_data ) ) {
+            wp_send_json_error( array( 'message' => $raw_data->get_error_message() ) );
+        }
+
+        // Parse data.
+        $parsed = Sheets_Parser::parse_sheet_data( $raw_data, $column_map );
+        $validation = Sheets_Parser::validate_data( $parsed, $import_type );
+
+        if ( empty( $validation['valid_rows'] ) ) {
+            wp_send_json_error( array(
+                'message' => __( 'No valid data to import.', 'swiftlms' ),
+                'errors'  => $validation['errors'],
+            ) );
+        }
+
+        // Import.
+        $importer = new Sheets_Importer( $validation['valid_rows'], $import_type, $options );
+        $result = $importer->import();
+
+        wp_send_json_success( array(
+            'message' => sprintf(
+                __( 'Import complete: %d created, %d updated, %d skipped, %d errors.', 'swiftlms' ),
+                $result['stats']['created'],
+                $result['stats']['updated'],
+                $result['stats']['skipped'],
+                $result['stats']['errors']
+            ),
+            'stats'   => $result['stats'],
+            'log'     => $result['log'],
+        ) );
+    }
+
+    /**
+     * AJAX: Download template CSV.
+     */
+    public function ajax_download_template(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        $import_type = isset( $_GET['type'] ) ? sanitize_text_field( $_GET['type'] ) : '';
+
+        if ( empty( $import_type ) ) {
+            wp_die( 'Invalid import type' );
+        }
+
+        $csv = Sheets_Parser::generate_template( $import_type );
+        $filename = 'swiftlms-' . $import_type . '-template.csv';
+
+        header( 'Content-Type: text/csv' );
+        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+        echo $csv;
+        exit;
+    }
+
+    /**
+     * AJAX: Save preset.
+     */
+    public function ajax_save_preset(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        $id = isset( $_POST['preset_id'] ) ? sanitize_key( $_POST['preset_id'] ) : '';
+        $name = isset( $_POST['preset_name'] ) ? sanitize_text_field( $_POST['preset_name'] ) : '';
+        $desc = isset( $_POST['preset_desc'] ) ? sanitize_text_field( $_POST['preset_desc'] ) : '';
+        $options = isset( $_POST['options'] ) ? json_decode( stripslashes( $_POST['options'] ), true ) : array();
+
+        if ( empty( $id ) || empty( $name ) ) {
+            wp_send_json_error( array( 'message' => __( 'Preset ID and name are required.', 'swiftlms' ) ) );
+        }
+
+        $validated_options = Parsing_Options::validate_options( $options );
+        Parsing_Options::save_preset( $id, $name, $desc, $validated_options );
+
+        wp_send_json_success( array( 'message' => __( 'Preset saved.', 'swiftlms' ) ) );
+    }
+
+    /**
+     * AJAX: Delete preset.
+     */
+    public function ajax_delete_preset(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'swiftlms' ) ) );
+        }
+
+        $id = isset( $_POST['preset_id'] ) ? sanitize_key( $_POST['preset_id'] ) : '';
+
+        if ( empty( $id ) ) {
+            wp_send_json_error( array( 'message' => __( 'Preset ID is required.', 'swiftlms' ) ) );
+        }
+
+        Parsing_Options::delete_preset( $id );
+
+        wp_send_json_success( array( 'message' => __( 'Preset deleted.', 'swiftlms' ) ) );
+    }
+
+    /**
+     * AJAX: Load preset options.
+     */
+    public function ajax_load_preset(): void {
+        check_ajax_referer( 'sfls_gdocs_nonce', 'nonce' );
+
+        $id = isset( $_POST['preset_id'] ) ? sanitize_key( $_POST['preset_id'] ) : '';
+
+        if ( empty( $id ) ) {
+            wp_send_json_error( array( 'message' => __( 'Preset ID is required.', 'swiftlms' ) ) );
+        }
+
+        $preset = Parsing_Options::get_preset( $id );
+
+        if ( ! $preset ) {
+            wp_send_json_error( array( 'message' => __( 'Preset not found.', 'swiftlms' ) ) );
+        }
+
+        wp_send_json_success( array(
+            'preset'  => $preset,
+            'options' => Parsing_Options::get_preset_options( $id ),
+        ) );
     }
 }
