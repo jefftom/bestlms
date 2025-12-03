@@ -105,6 +105,15 @@ class Certificate extends AbstractPostType {
         );
 
         add_meta_box(
+            'sfls_certificate_canvas_editor',
+            __( 'Canvas Editor (Advanced)', 'swiftlms' ),
+            array( $this, 'render_canvas_editor_meta_box' ),
+            $this->get_post_type(),
+            'normal',
+            'high'
+        );
+
+        add_meta_box(
             'sfls_certificate_settings',
             __( 'Certificate Settings', 'swiftlms' ),
             array( $this, 'render_settings_meta_box' ),
@@ -637,6 +646,305 @@ class Certificate extends AbstractPostType {
            class="button button-primary" target="_blank">
             <?php esc_html_e( 'Preview Certificate', 'swiftlms' ); ?>
         </a>
+        <?php
+    }
+
+    /**
+     * Render canvas editor meta box.
+     *
+     * @param \WP_Post $post Current post.
+     * @return void
+     */
+    public function render_canvas_editor_meta_box( $post ): void {
+        $canvas_data = get_post_meta( $post->ID, '_sfls_canvas_template_data', true );
+        $template_name = get_post_meta( $post->ID, '_sfls_canvas_template_name', true ) ?: '';
+        $templates = TemplateRenderer::get_available_templates();
+        ?>
+        <div class="canvas-editor-wrapper">
+            <!-- Left Sidebar - Toolbox -->
+            <div class="canvas-toolbox">
+                <!-- Elements Section -->
+                <div class="toolbox-section">
+                    <h4><?php esc_html_e( 'Text', 'swiftlms' ); ?></h4>
+                    <div class="tool-buttons">
+                        <button type="button" class="tool-btn" id="tool-add-heading">
+                            <span class="dashicons dashicons-heading"></span>
+                            <span><?php esc_html_e( 'Heading', 'swiftlms' ); ?></span>
+                        </button>
+                        <button type="button" class="tool-btn" id="tool-add-text">
+                            <span class="dashicons dashicons-editor-textcolor"></span>
+                            <span><?php esc_html_e( 'Text', 'swiftlms' ); ?></span>
+                        </button>
+                        <button type="button" class="tool-btn full-width" id="tool-add-dynamic">
+                            <span class="dashicons dashicons-admin-users"></span>
+                            <span><?php esc_html_e( 'Dynamic Field', 'swiftlms' ); ?></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="toolbox-section">
+                    <h4><?php esc_html_e( 'Shapes', 'swiftlms' ); ?></h4>
+                    <div class="tool-buttons">
+                        <button type="button" class="tool-btn" id="tool-add-rect">
+                            <span class="dashicons dashicons-tablet"></span>
+                            <span><?php esc_html_e( 'Rectangle', 'swiftlms' ); ?></span>
+                        </button>
+                        <button type="button" class="tool-btn" id="tool-add-circle">
+                            <span class="dashicons dashicons-marker"></span>
+                            <span><?php esc_html_e( 'Circle', 'swiftlms' ); ?></span>
+                        </button>
+                        <button type="button" class="tool-btn" id="tool-add-line">
+                            <span class="dashicons dashicons-minus"></span>
+                            <span><?php esc_html_e( 'Line', 'swiftlms' ); ?></span>
+                        </button>
+                        <button type="button" class="tool-btn" id="tool-add-border">
+                            <span class="dashicons dashicons-editor-expand"></span>
+                            <span><?php esc_html_e( 'Border', 'swiftlms' ); ?></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="toolbox-section">
+                    <h4><?php esc_html_e( 'Media', 'swiftlms' ); ?></h4>
+                    <div class="tool-buttons">
+                        <button type="button" class="tool-btn" id="tool-add-image">
+                            <span class="dashicons dashicons-format-image"></span>
+                            <span><?php esc_html_e( 'Image', 'swiftlms' ); ?></span>
+                        </button>
+                        <button type="button" class="tool-btn" id="tool-add-qr">
+                            <span class="dashicons dashicons-smartphone"></span>
+                            <span><?php esc_html_e( 'QR Code', 'swiftlms' ); ?></span>
+                        </button>
+                        <button type="button" class="tool-btn full-width" id="tool-add-signature">
+                            <span class="dashicons dashicons-admin-customizer"></span>
+                            <span><?php esc_html_e( 'Signature Line', 'swiftlms' ); ?></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pre-built Templates -->
+                <div class="toolbox-section">
+                    <h4><?php esc_html_e( 'Start from Template', 'swiftlms' ); ?></h4>
+                    <div class="prebuilt-templates">
+                        <?php foreach ( array_slice( $templates, 0, 6 ) as $template ) : ?>
+                            <button type="button" class="prebuilt-template-btn" data-template="<?php echo esc_attr( $template['id'] ); ?>">
+                                <div class="template-thumb"><?php echo esc_html( substr( $template['name'], 0, 2 ) ); ?></div>
+                                <span><?php echo esc_html( $template['name'] ); ?></span>
+                            </button>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Layers Panel -->
+                <div class="toolbox-section layers-section">
+                    <h4><?php esc_html_e( 'Layers', 'swiftlms' ); ?></h4>
+                    <div id="layers-list"></div>
+                </div>
+            </div>
+
+            <!-- Main Canvas Area -->
+            <div class="canvas-main">
+                <!-- Toolbar -->
+                <div class="canvas-toolbar">
+                    <div class="toolbar-left">
+                        <button type="button" class="toolbar-btn" id="btn-undo" title="<?php esc_attr_e( 'Undo', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-undo"></span>
+                        </button>
+                        <button type="button" class="toolbar-btn" id="btn-redo" title="<?php esc_attr_e( 'Redo', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-redo"></span>
+                        </button>
+                        <div class="toolbar-separator"></div>
+                        <button type="button" class="toolbar-btn" id="btn-delete" title="<?php esc_attr_e( 'Delete', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-trash"></span>
+                        </button>
+                        <button type="button" class="toolbar-btn" id="btn-duplicate" title="<?php esc_attr_e( 'Duplicate', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-admin-page"></span>
+                        </button>
+                        <div class="toolbar-separator"></div>
+                        <button type="button" class="toolbar-btn" id="btn-bring-front" title="<?php esc_attr_e( 'Bring to Front', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-arrow-up-alt"></span>
+                        </button>
+                        <button type="button" class="toolbar-btn" id="btn-send-back" title="<?php esc_attr_e( 'Send to Back', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-arrow-down-alt"></span>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-center">
+                        <button type="button" class="toolbar-btn" id="zoom-out" title="<?php esc_attr_e( 'Zoom Out', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-minus"></span>
+                        </button>
+                        <span id="zoom-level">100%</span>
+                        <button type="button" class="toolbar-btn" id="zoom-in" title="<?php esc_attr_e( 'Zoom In', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-plus"></span>
+                        </button>
+                        <button type="button" class="toolbar-btn" id="zoom-fit" title="<?php esc_attr_e( 'Fit to Screen', 'swiftlms' ); ?>">
+                            <span class="dashicons dashicons-editor-expand"></span>
+                        </button>
+                        <button type="button" class="toolbar-btn" id="zoom-100" title="<?php esc_attr_e( '100%', 'swiftlms' ); ?>">
+                            1:1
+                        </button>
+                    </div>
+
+                    <div class="toolbar-right">
+                        <label class="props-checkbox">
+                            <input type="checkbox" id="toggle-grid">
+                            <span><?php esc_html_e( 'Grid', 'swiftlms' ); ?></span>
+                        </label>
+                        <label class="props-checkbox">
+                            <input type="checkbox" id="toggle-snap">
+                            <span><?php esc_html_e( 'Snap', 'swiftlms' ); ?></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Canvas Container -->
+                <div id="certificate-canvas-container">
+                    <div class="canvas-wrapper">
+                        <canvas id="certificate-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar - Properties -->
+            <div class="canvas-properties">
+                <!-- Canvas Settings -->
+                <div class="props-section">
+                    <h4><?php esc_html_e( 'Canvas', 'swiftlms' ); ?></h4>
+                    <div class="canvas-settings">
+                        <select id="canvas-size-preset">
+                            <option value="letter-landscape"><?php esc_html_e( 'Letter Landscape', 'swiftlms' ); ?></option>
+                            <option value="letter-portrait"><?php esc_html_e( 'Letter Portrait', 'swiftlms' ); ?></option>
+                            <option value="a4-landscape"><?php esc_html_e( 'A4 Landscape', 'swiftlms' ); ?></option>
+                            <option value="a4-portrait"><?php esc_html_e( 'A4 Portrait', 'swiftlms' ); ?></option>
+                        </select>
+                        <input type="color" id="canvas-bg-color" value="#ffffff" title="<?php esc_attr_e( 'Background Color', 'swiftlms' ); ?>">
+                    </div>
+                </div>
+
+                <!-- Text Properties -->
+                <div class="props-section props-text">
+                    <h4><?php esc_html_e( 'Text', 'swiftlms' ); ?></h4>
+                    <div class="props-row">
+                        <div class="props-input">
+                            <select id="prop-font-family">
+                                <?php foreach ( self::GOOGLE_FONTS as $font ) : ?>
+                                    <option value="<?php echo esc_attr( $font ); ?>"><?php echo esc_html( $font ); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="props-row">
+                        <div class="props-input" style="width: 60px; margin-right: 10px;">
+                            <input type="number" id="prop-font-size" min="8" max="200" value="24">
+                        </div>
+                        <div class="props-input" style="width: 50px;">
+                            <input type="color" id="prop-font-color" value="#333333">
+                        </div>
+                    </div>
+                    <div class="props-row">
+                        <div class="text-format-btns">
+                            <button type="button" class="format-btn" id="prop-bold" title="Bold"><strong>B</strong></button>
+                            <button type="button" class="format-btn" id="prop-italic" title="Italic"><em>I</em></button>
+                            <button type="button" class="format-btn" id="prop-underline" title="Underline"><u>U</u></button>
+                        </div>
+                        <div class="align-btns">
+                            <button type="button" class="format-btn" id="prop-align-left" title="Align Left">
+                                <span class="dashicons dashicons-editor-alignleft"></span>
+                            </button>
+                            <button type="button" class="format-btn" id="prop-align-center" title="Align Center">
+                                <span class="dashicons dashicons-editor-aligncenter"></span>
+                            </button>
+                            <button type="button" class="format-btn" id="prop-align-right" title="Align Right">
+                                <span class="dashicons dashicons-editor-alignright"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shape Properties -->
+                <div class="props-section props-shape">
+                    <h4><?php esc_html_e( 'Style', 'swiftlms' ); ?></h4>
+                    <div class="props-row">
+                        <span class="props-label"><?php esc_html_e( 'Fill', 'swiftlms' ); ?></span>
+                        <div class="props-input">
+                            <input type="color" id="prop-fill-color" value="#ffffff">
+                        </div>
+                    </div>
+                    <div class="props-row">
+                        <span class="props-label"><?php esc_html_e( 'Stroke', 'swiftlms' ); ?></span>
+                        <div class="props-input" style="display: flex; gap: 8px;">
+                            <input type="color" id="prop-stroke-color" value="#333333" style="flex: 1;">
+                            <input type="number" id="prop-stroke-width" min="0" max="20" value="1" style="width: 50px;">
+                        </div>
+                    </div>
+                    <div class="props-row">
+                        <span class="props-label"><?php esc_html_e( 'Opacity', 'swiftlms' ); ?></span>
+                        <div class="props-input">
+                            <input type="range" id="prop-opacity" min="0" max="1" step="0.1" value="1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position Properties -->
+                <div class="props-section props-position">
+                    <h4><?php esc_html_e( 'Position & Size', 'swiftlms' ); ?></h4>
+                    <div class="props-grid">
+                        <div class="props-grid-item">
+                            <label>X</label>
+                            <input type="number" id="prop-pos-x" value="0">
+                        </div>
+                        <div class="props-grid-item">
+                            <label>Y</label>
+                            <input type="number" id="prop-pos-y" value="0">
+                        </div>
+                        <div class="props-grid-item">
+                            <label><?php esc_html_e( 'W', 'swiftlms' ); ?></label>
+                            <input type="number" id="prop-width" value="100">
+                        </div>
+                        <div class="props-grid-item">
+                            <label><?php esc_html_e( 'H', 'swiftlms' ); ?></label>
+                            <input type="number" id="prop-height" value="100">
+                        </div>
+                    </div>
+                    <div class="props-row" style="margin-top: 10px;">
+                        <span class="props-label"><?php esc_html_e( 'Rotation', 'swiftlms' ); ?></span>
+                        <div class="props-input">
+                            <input type="number" id="prop-rotation" min="-360" max="360" value="0">
+                        </div>
+                    </div>
+                    <div class="props-row">
+                        <label class="props-checkbox">
+                            <input type="checkbox" id="prop-lock-aspect" checked>
+                            <span><?php esc_html_e( 'Lock aspect ratio', 'swiftlms' ); ?></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="canvas-actions">
+                    <div class="template-name-input">
+                        <label for="template-name"><?php esc_html_e( 'Template Name', 'swiftlms' ); ?></label>
+                        <input type="text" id="template-name" value="<?php echo esc_attr( $template_name ); ?>" placeholder="<?php esc_attr_e( 'My Custom Template', 'swiftlms' ); ?>">
+                    </div>
+                    <button type="button" class="action-btn" id="btn-save-template">
+                        <span class="dashicons dashicons-saved"></span>
+                        <?php esc_html_e( 'Save Template', 'swiftlms' ); ?>
+                    </button>
+                    <button type="button" class="action-btn secondary" id="btn-preview">
+                        <span class="dashicons dashicons-visibility"></span>
+                        <?php esc_html_e( 'Preview', 'swiftlms' ); ?>
+                    </button>
+                    <button type="button" class="action-btn secondary" id="btn-export-png">
+                        <span class="dashicons dashicons-download"></span>
+                        <?php esc_html_e( 'Export PNG', 'swiftlms' ); ?>
+                    </button>
+                    <button type="button" class="action-btn secondary" id="btn-export-pdf">
+                        <span class="dashicons dashicons-media-document"></span>
+                        <?php esc_html_e( 'Export PDF', 'swiftlms' ); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
         <?php
     }
 

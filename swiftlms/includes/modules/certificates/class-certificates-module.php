@@ -88,6 +88,11 @@ class CertificatesModule extends AbstractModule {
         add_action( 'wp_ajax_sfls_preview_certificate_fullscreen', array( $this, 'ajax_preview_fullscreen' ) );
         add_action( 'wp_ajax_sfls_get_template_defaults', array( $this, 'ajax_get_template_defaults' ) );
 
+        // Canvas editor AJAX handlers.
+        add_action( 'wp_ajax_swiftlms_save_canvas_template', array( $this, 'ajax_save_canvas_template' ) );
+        add_action( 'wp_ajax_swiftlms_generate_canvas_pdf', array( $this, 'ajax_generate_canvas_pdf' ) );
+        add_action( 'wp_ajax_swiftlms_get_prebuilt_template', array( $this, 'ajax_get_prebuilt_template' ) );
+
         // Auto-generate certificate on course completion.
         add_action( 'swiftlms_course_completed', array( $this, 'auto_generate_certificate' ), 10, 2 );
 
@@ -198,6 +203,48 @@ class CertificatesModule extends AbstractModule {
                 'saved'         => __( 'Saved!', 'swiftlms' ),
             ),
         ) );
+
+        // Only load canvas editor on edit screen.
+        if ( in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+            // Fabric.js for canvas editor.
+            wp_enqueue_script(
+                'fabric-js',
+                'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js',
+                array(),
+                '5.3.1',
+                true
+            );
+
+            // Canvas editor CSS.
+            wp_enqueue_style(
+                'sfls-canvas-editor',
+                $module_url . 'assets/css/canvas-editor.css',
+                array(),
+                SWIFTLMS_VERSION
+            );
+
+            // Canvas editor JS.
+            wp_enqueue_script(
+                'sfls-canvas-editor',
+                $module_url . 'assets/js/canvas-editor.js',
+                array( 'jquery', 'fabric-js', 'wp-util' ),
+                SWIFTLMS_VERSION,
+                true
+            );
+
+            global $post;
+            $template_data = '';
+            if ( $post && $post->ID ) {
+                $template_data = get_post_meta( $post->ID, '_sfls_canvas_template_data', true );
+            }
+
+            wp_localize_script( 'sfls-canvas-editor', 'certificateCanvasData', array(
+                'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+                'nonce'        => wp_create_nonce( 'sfls_canvas_editor' ),
+                'postId'       => $post ? $post->ID : 0,
+                'templateData' => $template_data,
+            ) );
+        }
 
         // Legacy inline script for backwards compatibility.
         wp_add_inline_script(
@@ -747,5 +794,326 @@ class CertificatesModule extends AbstractModule {
             .sfls-cert-code code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
         </style>
         <?php
+    }
+
+    /**
+     * AJAX: Save canvas template.
+     *
+     * @return void
+     */
+    public function ajax_save_canvas_template(): void {
+        check_ajax_referer( 'sfls_canvas_editor', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+        }
+
+        $post_id       = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+        $template_name = isset( $_POST['template_name'] ) ? sanitize_text_field( wp_unslash( $_POST['template_name'] ) ) : '';
+        $template_data = isset( $_POST['template_data'] ) ? wp_unslash( $_POST['template_data'] ) : '';
+
+        if ( ! $post_id ) {
+            wp_send_json_error( array( 'message' => 'Invalid post ID' ) );
+        }
+
+        // Validate JSON.
+        $decoded = json_decode( $template_data, true );
+        if ( json_last_error() !== JSON_ERROR_NONE ) {
+            wp_send_json_error( array( 'message' => 'Invalid template data' ) );
+        }
+
+        // Save to post meta.
+        update_post_meta( $post_id, '_sfls_canvas_template_data', $template_data );
+        update_post_meta( $post_id, '_sfls_canvas_template_name', $template_name );
+        update_post_meta( $post_id, '_sfls_editor_mode', 'canvas' );
+
+        wp_send_json_success( array(
+            'message' => __( 'Template saved successfully', 'swiftlms' ),
+            'post_id' => $post_id,
+        ) );
+    }
+
+    /**
+     * AJAX: Generate PDF from canvas template.
+     *
+     * @return void
+     */
+    public function ajax_generate_canvas_pdf(): void {
+        check_ajax_referer( 'sfls_canvas_editor', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_die( 'Unauthorized' );
+        }
+
+        $template_data = isset( $_POST['template_data'] ) ? wp_unslash( $_POST['template_data'] ) : '';
+
+        if ( empty( $template_data ) ) {
+            wp_die( 'No template data provided' );
+        }
+
+        $data = json_decode( $template_data, true );
+
+        if ( ! $data || ! isset( $data['canvas'] ) ) {
+            wp_die( 'Invalid template data' );
+        }
+
+        // Generate HTML from canvas data.
+        $html = $this->canvas_to_html( $data );
+
+        // Output as printable page.
+        header( 'Content-Type: text/html; charset=utf-8' );
+        echo $html;
+        exit;
+    }
+
+    /**
+     * Convert canvas data to HTML for printing/PDF.
+     *
+     * @param array $data Canvas data.
+     * @return string HTML output.
+     */
+    private function canvas_to_html( array $data ): string {
+        $settings = $data['settings'] ?? array();
+        $canvas   = $data['canvas'] ?? array();
+        $width    = $settings['width'] ?? 792;
+        $height   = $settings['height'] ?? 612;
+        $bg_color = $settings['backgroundColor'] ?? '#ffffff';
+
+        $html = '<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Certificate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600;700&family=Great+Vibes&family=Montserrat:wght@400;600;700&family=Dancing+Script&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: ' . $width . 'px ' . $height . 'px;
+            margin: 0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: ' . $width . 'px;
+            height: ' . $height . 'px;
+            background: ' . $bg_color . ';
+            position: relative;
+            font-family: "Open Sans", sans-serif;
+        }
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .canvas-element {
+            position: absolute;
+            transform-origin: center center;
+        }
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <div class="canvas-container">';
+
+        // Render canvas objects.
+        if ( isset( $canvas['objects'] ) && is_array( $canvas['objects'] ) ) {
+            foreach ( $canvas['objects'] as $obj ) {
+                $html .= $this->render_canvas_object( $obj );
+            }
+        }
+
+        $html .= '
+    </div>
+    <script>
+        window.onload = function() {
+            window.print();
+        };
+    </script>
+</body>
+</html>';
+
+        return $html;
+    }
+
+    /**
+     * Render a single canvas object to HTML.
+     *
+     * @param array $obj Canvas object data.
+     * @return string HTML.
+     */
+    private function render_canvas_object( array $obj ): string {
+        $type = $obj['type'] ?? '';
+        $html = '';
+
+        $left    = isset( $obj['left'] ) ? floatval( $obj['left'] ) : 0;
+        $top     = isset( $obj['top'] ) ? floatval( $obj['top'] ) : 0;
+        $angle   = isset( $obj['angle'] ) ? floatval( $obj['angle'] ) : 0;
+        $opacity = isset( $obj['opacity'] ) ? floatval( $obj['opacity'] ) : 1;
+        $scaleX  = isset( $obj['scaleX'] ) ? floatval( $obj['scaleX'] ) : 1;
+        $scaleY  = isset( $obj['scaleY'] ) ? floatval( $obj['scaleY'] ) : 1;
+
+        $transform = '';
+        if ( $angle !== 0 ) {
+            $transform .= 'rotate(' . $angle . 'deg) ';
+        }
+        if ( $scaleX !== 1 || $scaleY !== 1 ) {
+            $transform .= 'scale(' . $scaleX . ', ' . $scaleY . ')';
+        }
+
+        $base_style = sprintf(
+            'left: %spx; top: %spx; opacity: %s; %s',
+            $left,
+            $top,
+            $opacity,
+            $transform ? 'transform: ' . $transform . ';' : ''
+        );
+
+        switch ( $type ) {
+            case 'i-text':
+            case 'text':
+                $text       = esc_html( $obj['text'] ?? '' );
+                $font       = sanitize_text_field( $obj['fontFamily'] ?? 'Open Sans' );
+                $fontSize   = intval( $obj['fontSize'] ?? 24 );
+                $fill       = sanitize_hex_color( $obj['fill'] ?? '#333333' ) ?: '#333333';
+                $fontWeight = sanitize_text_field( $obj['fontWeight'] ?? 'normal' );
+                $fontStyle  = sanitize_text_field( $obj['fontStyle'] ?? 'normal' );
+                $textAlign  = sanitize_text_field( $obj['textAlign'] ?? 'left' );
+                $underline  = ! empty( $obj['underline'] );
+
+                $text_style = sprintf(
+                    'font-family: "%s", sans-serif; font-size: %spx; color: %s; font-weight: %s; font-style: %s; text-align: %s; %s',
+                    $font,
+                    $fontSize,
+                    $fill,
+                    $fontWeight,
+                    $fontStyle,
+                    $textAlign,
+                    $underline ? 'text-decoration: underline;' : ''
+                );
+
+                $html .= '<div class="canvas-element" style="' . esc_attr( $base_style . $text_style ) . '">';
+                $html .= nl2br( $text );
+                $html .= '</div>';
+                break;
+
+            case 'rect':
+                $width       = isset( $obj['width'] ) ? floatval( $obj['width'] ) : 100;
+                $height      = isset( $obj['height'] ) ? floatval( $obj['height'] ) : 50;
+                $fill        = sanitize_text_field( $obj['fill'] ?? 'transparent' );
+                $stroke      = sanitize_hex_color( $obj['stroke'] ?? '#333333' ) ?: '#333333';
+                $strokeWidth = intval( $obj['strokeWidth'] ?? 1 );
+                $rx          = isset( $obj['rx'] ) ? floatval( $obj['rx'] ) : 0;
+
+                $rect_style = sprintf(
+                    'width: %spx; height: %spx; background: %s; border: %spx solid %s; border-radius: %spx;',
+                    $width * $scaleX,
+                    $height * $scaleY,
+                    $fill,
+                    $strokeWidth,
+                    $stroke,
+                    $rx
+                );
+
+                $html .= '<div class="canvas-element" style="' . esc_attr( $base_style . $rect_style ) . '"></div>';
+                break;
+
+            case 'circle':
+                $radius      = isset( $obj['radius'] ) ? floatval( $obj['radius'] ) : 50;
+                $fill        = sanitize_text_field( $obj['fill'] ?? 'transparent' );
+                $stroke      = sanitize_hex_color( $obj['stroke'] ?? '#333333' ) ?: '#333333';
+                $strokeWidth = intval( $obj['strokeWidth'] ?? 1 );
+
+                $circle_style = sprintf(
+                    'width: %spx; height: %spx; background: %s; border: %spx solid %s; border-radius: 50%%;',
+                    $radius * 2 * $scaleX,
+                    $radius * 2 * $scaleY,
+                    $fill,
+                    $strokeWidth,
+                    $stroke
+                );
+
+                $html .= '<div class="canvas-element" style="' . esc_attr( $base_style . $circle_style ) . '"></div>';
+                break;
+
+            case 'line':
+                $x1          = isset( $obj['x1'] ) ? floatval( $obj['x1'] ) : 0;
+                $y1          = isset( $obj['y1'] ) ? floatval( $obj['y1'] ) : 0;
+                $x2          = isset( $obj['x2'] ) ? floatval( $obj['x2'] ) : 100;
+                $y2          = isset( $obj['y2'] ) ? floatval( $obj['y2'] ) : 0;
+                $stroke      = sanitize_hex_color( $obj['stroke'] ?? '#333333' ) ?: '#333333';
+                $strokeWidth = intval( $obj['strokeWidth'] ?? 1 );
+
+                $length = sqrt( pow( $x2 - $x1, 2 ) + pow( $y2 - $y1, 2 ) );
+                $angle  = atan2( $y2 - $y1, $x2 - $x1 ) * 180 / M_PI;
+
+                $line_style = sprintf(
+                    'width: %spx; height: %spx; background: %s; transform-origin: left center; transform: rotate(%sdeg);',
+                    $length,
+                    $strokeWidth,
+                    $stroke,
+                    $angle
+                );
+
+                $html .= '<div class="canvas-element" style="left: ' . esc_attr( $x1 + $left ) . 'px; top: ' . esc_attr( $y1 + $top ) . 'px; ' . esc_attr( $line_style ) . '"></div>';
+                break;
+
+            case 'image':
+                $src    = esc_url( $obj['src'] ?? '' );
+                $width  = isset( $obj['width'] ) ? floatval( $obj['width'] ) : 100;
+                $height = isset( $obj['height'] ) ? floatval( $obj['height'] ) : 100;
+
+                if ( $src ) {
+                    $img_style = sprintf(
+                        'width: %spx; height: %spx;',
+                        $width * $scaleX,
+                        $height * $scaleY
+                    );
+
+                    $html .= '<img src="' . $src . '" class="canvas-element" style="' . esc_attr( $base_style . $img_style ) . '">';
+                }
+                break;
+
+            case 'group':
+                // Render group children.
+                if ( isset( $obj['objects'] ) && is_array( $obj['objects'] ) ) {
+                    $html .= '<div class="canvas-element" style="' . esc_attr( $base_style ) . '">';
+                    foreach ( $obj['objects'] as $child ) {
+                        $html .= $this->render_canvas_object( $child );
+                    }
+                    $html .= '</div>';
+                }
+                break;
+        }
+
+        return $html;
+    }
+
+    /**
+     * AJAX: Get prebuilt template for canvas editor.
+     *
+     * @return void
+     */
+    public function ajax_get_prebuilt_template(): void {
+        check_ajax_referer( 'sfls_canvas_editor', 'nonce' );
+
+        if ( ! current_user_can( 'edit_posts' ) ) {
+            wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+        }
+
+        $template_id = isset( $_POST['template_id'] ) ? sanitize_text_field( wp_unslash( $_POST['template_id'] ) ) : '';
+
+        if ( empty( $template_id ) ) {
+            wp_send_json_error( array( 'message' => 'No template specified' ) );
+        }
+
+        $renderer = new TemplateRenderer( $template_id );
+        $info     = $renderer->get_template_info();
+
+        if ( empty( $info ) ) {
+            wp_send_json_error( array( 'message' => 'Template not found' ) );
+        }
+
+        wp_send_json_success( $info );
     }
 }
